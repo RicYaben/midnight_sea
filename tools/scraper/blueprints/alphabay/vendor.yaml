@@ -1,0 +1,32 @@
+scraper: groups
+struct:
+  - name: username
+    instructions:
+      - props:
+          name: div
+          attrs:
+            id: contact
+      - props:
+          name: h1
+        attrs:
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          name: div
+          attrs:
+            id: contact
+      - props:
+          name: textarea
+        attrs:
+          - text
+
+  - name: reputation
+    clean: (?!\(.*?)(\d\d*[.]?\d*)(?=\%.*positive\))
+    instructions:
+      - props:
+          string: .*positive\)
+        attrs:
+          - parent
+          - text

@@ -1,0 +1,14 @@
+Digital goods:
+- last: /listing?cat=68&cat=69&cat=70&cat=71&cat=72&cat=73&page=44
+  last_crawl: 2022-04-17 22:04:04.399538
+  path: listing?cat=68&cat=69&cat=70&cat=71&cat=72&cat=73
+  url: /listing?cat=68&cat=69&cat=70&cat=71&cat=72&cat=73&page=45
+Documents:
+- last: /listing?cat=74&cat=75&page=19&q=
+  last_crawl: 2022-04-17 22:11:03.113623
+  path: listing?q=&cat=74&cat=75
+  url: /listing?cat=74&cat=75&page=19&q=
+Fraud:
+- last: /listing?cat=76&cat=77&cat=78&cat=79&cat=80&page=51
+  path: listing?cat=76&cat=77&cat=78&cat=79&cat=80
+  url: /listing?cat=76&cat=77&cat=78&cat=79&cat=80&page=52

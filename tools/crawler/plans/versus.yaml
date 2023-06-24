@@ -1,0 +1,86 @@
+meta:
+  domain: http://pqqmr3p3tppwqvvapi6fa7jowrehgd36ct6lzr26qqormaqvh6gt4jyd.onion
+  market: versus
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          # NOTE: Missing an intermediate page with another captcha
+          - name: captcha
+            instructions:
+              - props:
+                  name: form
+                  attrs:
+                    name: ddos
+                  limit: 1
+
+          - name: captcha
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    class: form__input--captcha-solution
+                  limit: 1
+
+          - name: login
+            instructions:
+              - props:
+                  name: form
+                  attrs:
+                    name: login
+                    class: form--login
+                  limit: 1
+                attrs:
+                  - href
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name: a
+                  attrs:
+                    href: /listing/
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: pagination__navigation
+          - props:
+              name: a
+              text: ">"
+              limit: 1
+            attrs:
+              - href
+
+    pages:
+      - name: Digital goods
+        path: listing?cat=68&cat=69&cat=70&cat=71&cat=72&cat=73
+
+      - name: Documents
+        path: listing?q=&cat=74&cat=75
+
+      - name: Fraud
+        path: listing?cat=76&cat=77&cat=78&cat=79&cat=80
+
+      - name: Tutorials
+        path: listing?q=&cat=81&cat=83&cat=84&cat=85&cat=86&cat=87
+
+      - name: Services
+        path: listing?cat=99&cat=100&cat=101&cat=102&cat=103&cat=104
+
+      - name: Software and malware
+        path: listing?cat=105&cat=106&cat=107&cat=108&cat=109

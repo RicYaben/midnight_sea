@@ -1,0 +1,33 @@
+scraper: groups
+struct:
+  - name: username
+    instructions:
+      - props:
+          name: li
+          attrs:
+            class: breadcrumb-item active
+        attrs:
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          name: section
+          attrs:
+            id: PGP
+
+      - props:
+          name: textarea
+          attrs:
+            class: form-control
+        attrs:
+          - text
+
+  - name: reputation
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: span
+          string: Level
+        attrs:
+          - text

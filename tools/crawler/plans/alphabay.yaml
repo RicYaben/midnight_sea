@@ -1,0 +1,130 @@
+meta:
+  market: alphabay
+  #domain: http://alphabay522szl32u4ci5e3iokdsyth56ei7rwngr2wm7i5jo54j2eid.onion
+  domain: http://tnaefzkcnhryeusi7hdpqujqiqmnbtah3dmjcg3gvezohunjuxbq.b32.i2p
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          # NOTE: Missing captcha page
+          - name: clock
+            instructions:
+              - props:
+                  name: form
+                  attrs:
+                    class: ddos_form
+
+          - name: login
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: login-box
+
+          - name: anti-phising
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    name: captcha_ans
+
+  category:
+    validators:
+      content:
+        required:
+          - name: listing
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: box
+
+    elements:
+      - &listing
+        name: listing
+        many: true
+        instructions:
+          - props:
+              attrs:
+                href: listing\?id\=
+            attrs:
+              - href
+      - name: next_page
+        instructions:
+          - props:
+              name: li
+              attrs:
+                class: "page-item active"
+              limit: 1
+            attrs:
+              - nextSibling
+          - props:
+              name: a
+              attrs:
+                class: page-link
+              limit: 1
+            attrs:
+              - href
+
+    pages:
+      - name: Fraud
+        path: listing_category?id=${range}
+        vars:
+          range: [2, 9]
+
+      - name: Hacking and Spam
+        path: listing_category?id=${range}
+        vars:
+          range: [11, 21]
+
+      - name: Malware
+        path: listing_category?id=${range}
+        vars:
+          range: [23, 37]
+
+      - name: Services
+        path: listing_category?id=${range}
+        vars:
+          range: [112, 123]
+
+      - name: Security and Hosting
+        path: listing_category?id=${list}
+        vars:
+          list: [125, 129, 132]
+
+      - name: Guides and Tutorials
+        path: listing_category?id=${list}
+        vars:
+          range: [136, 143]
+
+      - name: Software
+        path: listing_category?id=${list}
+        vars:
+          list: [145, 150]
+
+      - name: Digital
+        path: listing_category?id=${range}
+        vars:
+          range: [152, 157]
+
+      - name: Counterfeit
+        path: listing_category?id=${list}
+        vars:
+          list: [172, 178, 179, 180, 181]
+
+      - name: Card
+        path: listing_category?id=${list}
+        vars:
+          list: [183, 189, 195, 196, 197]
+
+      - name: Automotive
+        path: listing_category?id=${list}
+        vars:
+          list: [199, 205, 211, 216]
+
+      - name: Other
+        path: listing_category?id=234

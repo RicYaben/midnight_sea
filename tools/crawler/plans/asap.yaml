@@ -1,0 +1,110 @@
+meta:
+  market: asap
+  domain: http://asap2u4pvplnkzl7ecle45wajojnftja45wvovl3jrvhangeyq67ziid.onion
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          - name: captcha
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: captcha-wrapper
+
+          - name: captcha
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: captchav2
+
+          - name: form captcha
+            instructions:
+              - props:
+                  name: form
+                  attrs:
+                    class: ddos_form
+
+          - name: queue
+            instructions:
+              - props:
+                  name: title
+                  attrs:
+                    text: ASAP Access Queue
+
+          - name: ddos
+            instructions:
+              - props:
+                  name: pre
+                  attrs:
+                    text: 403 DDOS filter killed your path.
+
+  vendor:
+    options:
+      path: ?tab=PGP
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name: a
+                  attrs:
+                    href: /listing/[/?]*
+                    class: custom-link-action
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+        instructions:
+          - props:
+              name: a
+              attrs:
+                rel: next
+              limit: 1
+            attrs:
+              - href
+
+    pages:
+      - name: Digital goods
+        path: search?categoryId=cf0b497b-bbb4-4685-85df-f15f658f0372
+
+      - name: Counterfeits
+        path: search?categoryId=3e709c77-3e09-46a9-9bc4-ddc7c617bfbd
+
+      - name: Fraud
+        path: search?categoryId=6a99b55b-8258-4aa8-b75e-678fd4cda86d
+
+      - name: Benzos
+        path: search?categoryId=2704937a-22d0-4642-9e6b-f4623e6750d7
+
+      - name: Barbiturates
+        path: search?categoryId=ae728535-e367-4848-8ab1-5bca767d5202
+
+      - name: RCs
+        path: search?categoryId=119764f4-4490-4a2f-939a-3b9dc1b189dc
+
+      - name: Stimulants
+        path: search?categoryId=481cf3cf-396e-4741-91b5-25fe9505c721
+
+      - name: Drug paraphernalia
+        path: search?categoryId=03a515e4-1026-4862-8747-56d65ec385e2
+
+      - name: Steroids
+        path: search?categoryId=f9934eed-e35c-4201-8afc-59a4b60d09ce
+
+      - name: Prescription
+        path: search?categoryId=399738c9-7770-43aa-816b-ae7ad1569507
+
+      - name: Dissociatives
+        path: search?categoryId=de9e9133-02b4-4233-bb0c-f02851f09221

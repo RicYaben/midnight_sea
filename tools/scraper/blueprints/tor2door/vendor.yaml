@@ -1,0 +1,34 @@
+scraper: groups
+struct:
+  - name: username
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: col-md
+      - props:
+          name: h2
+        attrs:
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: card-body
+      - props:
+          name: textarea
+          attrs:
+            class: form-control
+        attrs:
+          - text
+
+  - name: reputation
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: div
+          string: "Feedback Score:"
+        attrs:
+          - text

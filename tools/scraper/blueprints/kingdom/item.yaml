@@ -1,0 +1,85 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: col-md-8
+
+      - props:
+          name: div
+          attrs:
+            class: box-head
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: contentCollapsible
+            id: descriptionContent
+        attrs:
+          - text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: box-cont
+      - props:
+          name: div
+          attrs:
+            class: col-md-8
+      - props:
+          name: h3
+        attrs:
+          - text
+
+  - name: currency
+    clean: ^\w+
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: box-cont
+      - props:
+          name: div
+          attrs:
+            class: col-md-8
+      - props:
+          name: h3
+        attrs:
+          - text
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: box-cont
+          - props:
+              name: a
+              attrs:
+                href: /user/view\?id=
+            attrs:
+              - text
+      - name: path
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: box-cont
+          - props:
+              name: a
+              attrs:
+                href: /user/view\?id=
+            attrs:
+              - href

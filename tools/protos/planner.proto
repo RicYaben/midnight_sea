@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+// Ignored in Python
+package planner;
+
+import "google/protobuf/struct.proto";
+
+service Planner{
+    rpc GetPlan (PlanRequest) returns (PlanResponse) {}
+}
+
+// Request the plan for some market
+message PlanRequest {
+    string market = 1;
+}
+
+// Send back a response with the plan as a JSON object
+message PlanResponse {
+    google.protobuf.Struct plan = 1;
+}

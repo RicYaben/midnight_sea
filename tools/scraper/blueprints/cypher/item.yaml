@@ -1,0 +1,62 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: h2
+          attrs:
+            class: btn-dark btn active btn-block
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: pre
+          attrs:
+            class: text-black-50 shadow-lg
+        attrs:
+          - text
+
+  - name: category
+    instructions:
+      - props:
+          name: li
+          attrs:
+            class: breadcrumb-item active
+        attrs:
+          - get_text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: td
+          string: Offers
+        attrs:
+          - parent
+          - text
+
+  - name: currency
+    fixed: USD
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: a
+              attrs:
+                href: /vendor/
+            attrs:
+              - text
+
+      - name: path
+        instructions:
+          - props:
+              name: a
+              attrs:
+                href: /vendor/
+            attrs:
+              - href

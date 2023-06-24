@@ -1,0 +1,40 @@
+Counterfeit:
+- last: /offers?filter_category=121&page=5&per-page=30
+  last_crawl: 2022-05-22 11:05:58.106191
+  path: offers?filter_category=121
+  url: null
+Fraud:
+- last: /offers?filter_category=114&page=14&per-page=30
+  last_crawl: 2022-05-22 11:03:48.387973
+  path: offers?filter_category=114
+  url: /offers?filter_category=114&page=15&per-page=30
+Guides and Tutorials:
+- last: /offers?filter_category=107&page=28&per-page=30
+  last_crawl: 2022-05-22 10:26:24.269273
+  path: offers?filter_category=107
+  url: /offers?filter_category=107&page=29&per-page=30
+Identification:
+- last: /offers?filter_category=101&page=5&per-page=30
+  last_crawl: 2022-05-22 09:23:43.506349
+  path: offers?filter_category=101
+  url: /offers?filter_category=101&page=6&per-page=30
+Miscellaneous:
+- last: offers?filter_category=96
+  last_crawl: 2022-05-22 09:12:23.539860
+  path: offers?filter_category=96
+  url: null
+Security and Hosting:
+- last: offers?filter_category=93
+  last_crawl: 2022-05-22 09:11:52.828409
+  path: offers?filter_category=93
+  url: null
+Services:
+- last: /offers?filter_category=45&page=2&per-page=30
+  last_crawl: 2022-05-22 09:11:22.020586
+  path: offers?filter_category=45
+  url: /offers?filter_category=45&page=3&per-page=30
+Software and Malware:
+- last: /offers?filter_category=127&page=4&per-page=30
+  last_crawl: 2022-05-08 16:51:42.191348
+  path: offers?filter_category=127
+  url: /offers?filter_category=127&page=5&per-page=30

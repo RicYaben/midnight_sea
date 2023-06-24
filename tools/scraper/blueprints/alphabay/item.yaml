@@ -1,0 +1,82 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: box rounded
+          limit: 1
+      - props:
+          name: h1
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: tabs
+          limit: 1
+      - props:
+          name: div
+          attrs:
+            class: tab
+          limit: 1
+        attrs:
+          - text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: strong
+          text: Purchase Price
+        attrs:
+          - parent
+      - props:
+          name: b
+        attrs:
+          - get_text
+
+  - name: currency
+    clean: \w+$
+    instructions:
+      - props:
+          name: strong
+          text: Purchase Price
+        attrs:
+          - parent
+      - props:
+          name: b
+        attrs:
+          - get_text
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: div
+              attrs:
+                id: productMain
+          - props:
+              name: a
+              attrs:
+                href: user\?u=
+            attrs:
+              - text
+      - name: path
+        instructions:
+          - props:
+              name: div
+              attrs:
+                id: productMain
+          - props:
+              name: a
+              attrs:
+                href: user\?u=
+            attrs:
+              - href

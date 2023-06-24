@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+// Ignored in Python
+package crawler;
+
+import "google/protobuf/struct.proto";
+
+service Crawler{
+    rpc GetCookies (CookiesRequest) returns (CookiesResponse) {}
+    rpc WaitForMarket (MarketRequest) returns (MarketResponse) {}
+}
+
+/**
+* Request authenticated cookies for some market.
+*/
+message CookiesRequest{
+    string market = 1;
+}
+
+/**
+* Returns a list of authenticated cookies for some market
+*/
+message CookiesResponse{
+    google.protobuf.Struct cookies = 1;
+}
+
+message MarketRequest{
+    string stub = 1;
+}
+
+/**
+* Request 
+*/
+message MarketResponse{
+    string market = 1;
+}

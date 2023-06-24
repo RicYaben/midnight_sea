@@ -1,0 +1,66 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: h2
+          attrs:
+            class: h4 mt-3 mb-3
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: card border-top-0
+
+      - props:
+          name: div
+          attrs:
+            class: card-body
+        attrs:
+          - text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: h3 text-secondary
+        attrs:
+          - text
+
+  - name: currency
+    fixed: "USD"
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: mb-1
+          - props:
+              name: a
+              attrs:
+                href: /en/users/
+            attrs:
+              - text
+
+      - name: path
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: mb-1
+          - props:
+              name: a
+              attrs:
+                href: /en/users/
+            attrs:
+              - href

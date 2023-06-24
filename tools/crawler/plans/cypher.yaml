@@ -1,0 +1,75 @@
+meta:
+  market: cypher
+  domain: http://6c5qaeiibh6ggmobsrv6vuilgb5uzjejpt2n3inoz2kv2sgzocymdvyd.onion
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          - name: clock
+            instructions:
+              - props:
+                  name: form
+                  attrs:
+                    class: ddos_form
+          - name: captcha
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    name: captcha
+          - name: login
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    id: username
+
+          - name: dos
+            instructions:
+              - props:
+                  string: 403 DDOS
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name: div
+                  attrs: card
+              - props:
+                  name: a
+                  attrs:
+                    href: product/
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+        instructions:
+          - props:
+              name: a
+              attrs:
+                rel: next
+            attrs:
+              - href
+
+    pages:
+      - name: Guides and Tutorials
+        path: category/23ce97c0-3cfb-11ea-8adb-376b000e7b7e
+
+      - name: Other
+        path: category/461b4ba0-3cfb-11ea-9311-277cdf981178
+
+      - name: Hosting and Security
+        path: category/7c784f00-3cfb-11ea-a3ba-9d1b2c5645ec
+
+      - name: Software and Malware
+        path: category/cd7eb0f0-3cfb-11ea-b5b7-ef87c7ec1d5b

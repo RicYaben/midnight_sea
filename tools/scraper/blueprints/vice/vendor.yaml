@@ -1,0 +1,35 @@
+# NOTE: Not tested!
+
+scraper: groups
+struct:
+  - name: username
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: profile_name
+      - props:
+          name: span
+          attrs:
+            title: Vendor
+        attrs:
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: pgp_box
+        attrs:
+          - text
+
+  - name: reputation
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          string: Feedback Score
+        attrs:
+          - parent
+          - parent
+          - text

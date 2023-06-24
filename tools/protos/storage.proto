@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+// Ignored in Python
+package storage;
+
+import "google/protobuf/struct.proto";
+
+// The Storage service
+service Storage{
+    rpc Store (StoreRequest) returns (StoreResponse) {}
+    rpc Pending (PendingRequest) returns (PendingResponse) {}
+    rpc Check (CheckRequest) returns (CheckResponse) {}
+}
+
+/**
+* Store
+*/
+
+// Request to store new items in the database
+message StoreRequest {
+    string market = 1;
+    string model = 2;
+
+    message Page {
+        string url = 1;
+        bytes data = 2;
+        google.protobuf.Struct meta = 3;
+    }
+
+    repeated Page pages = 3;
+}
+  
+// The response message containing the pages stored
+message StoreResponse {
+    string market = 1;
+    string model = 2;
+    optional int32 n_pages = 3;
+}
+
+/**
+* Pending
+*/
+// Request to get the pending pages to crawl for some model
+message PendingRequest {
+    string market = 1;
+    string model = 2;
+}
+
+// Response containing the pending pages to be crawled
+message PendingResponse {
+    string market = 1;
+    string model = 2;
+
+    repeated string pages = 3;
+}
+
+/**
+* Checks whether some pages are in the database
+*/
+message CheckRequest { 
+    string market = 1;
+    string model = 2;
+
+    repeated string pages = 3;
+}
+
+message CheckResponse {
+    string market = 1;
+    string model = 2;
+
+    repeated string pages = 3;
+}

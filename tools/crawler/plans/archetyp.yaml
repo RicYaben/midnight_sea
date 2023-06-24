@@ -1,0 +1,35 @@
+meta:
+  market: archetyp
+  domain: http://3s76idvyfwyibxqzwd7h7mqa7tf6a4pcshsg4zg4jdftilieyztpekqd.onion
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          - name: login
+          - name: captcha
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name:
+                  attrs:
+                    href:
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+
+    pages:
+      - name:
+        path:

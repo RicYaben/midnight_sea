@@ -1,0 +1,37 @@
+scraper: groups
+struct:
+  - name: username
+    clean: .*(?=\s\n)
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: box-head mtop
+      - props:
+          name: i
+          attrs:
+            class: fa fa-user
+        attrs:
+          - parent
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          name: div
+          attrs:
+            id: pgpContent
+      - props:
+          name: code
+        attrs:
+          - text
+
+  - name: reputation
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: strong
+          string: Market positive feedback
+        attrs:
+          - parent
+          - text

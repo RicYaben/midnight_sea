@@ -1,0 +1,40 @@
+scraper: groups
+struct:
+  - name: username
+    instructions:
+      - props:
+          string: "'s public PGP key"
+        attrs:
+          - parent
+
+      - props:
+          name: b
+        attrs:
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          string: BEGIN PGP PUBLIC KEY BLOCK
+        attrs:
+          - text
+
+  - name: reputation
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          string: "Vendor statistics"
+        attrs:
+          - parent
+          - parent
+
+      - props:
+          string: "Average rating:"
+        attrs:
+          - parent
+      - props:
+          name: span
+          attrs:
+            class: is-info
+        attrs:
+          - text

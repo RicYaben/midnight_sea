@@ -1,0 +1,35 @@
+meta:
+  market:
+  domain:
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          - name: login
+          - name: captcha
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name:
+                  attrs:
+                    href:
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+
+    pages:
+      - name:
+        path:

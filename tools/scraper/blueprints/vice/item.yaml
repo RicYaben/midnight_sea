@@ -1,0 +1,59 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: span
+          attrs:
+            style: "font-size:18px;font-weight: bold;color: #fff"
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: p
+          attrs:
+            style: "width:705px;margin-left:-305px"
+        attrs:
+          - get_text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          string: "USD Price:"
+        attrs:
+          - parent
+          - text
+
+  - name: currency
+    fixed: "USD"
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: listing_right
+          - props:
+              name: a
+              attrs:
+                href: \?page=profile&user=
+            attrs:
+              - text
+      - name: path
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: listing_right
+          - props:
+              name: a
+              attrs:
+                href: \?page=profile&user=
+            attrs:
+              - href

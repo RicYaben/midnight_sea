@@ -1,0 +1,20 @@
+Digital:
+- last: ?category=93&pg=19
+  last_crawl: 2022-05-19 09:35:13.762930
+  path: ?category=93
+  url: ?category=93&pg=20
+Fraud:
+- last: ?category=72&pg=21
+  last_crawl: 2022-05-19 09:35:39.081326
+  path: ?category=72
+  url: ?category=72&pg=22
+Other:
+- last: ?category=96&pg=2
+  last_crawl: 2022-05-19 09:36:01.902134
+  path: ?category=96
+  url: ?category=96&pg=3
+Services:
+- last: ?category=95&pg=4
+  last_crawl: 2022-05-19 09:35:51.042854
+  path: ?category=95
+  url: ?category=95&pg=5

@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "ms-crawler"
+version = "0.1.0"
+description = ""
+authors = ["Ricardo Yaben <rmyl@dtu.dk>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+PySocks = "^1.7.1"
+requests = "^2.26.0"
+PyYAML = "^6.0"
+beautifulsoup4 = "^4.10.0"
+grpcio = "^1.43.0"
+grpcio-tools = "^1.43.0"
+pytimedinput = "^2.0.1"
+lxml = "^4.7.1"
+tabulate = "^0.8.9"
+tldextract = "^3.2.1"
+
+[tool.poetry.group.dev.dependencies]
+black = {version = "^21.11b1", allow-prereleases = true}
+pytest = "^6.2.5"
+flake8 = "^4.0.1"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

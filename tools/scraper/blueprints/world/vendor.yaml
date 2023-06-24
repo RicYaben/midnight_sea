@@ -1,0 +1,51 @@
+scraper: simple
+
+struct:
+  - name: username
+    instructions:
+      - props:
+          name: h1
+          text: \'s Profile
+        attrs:
+          - text
+    clean: ^\w+( \w+)*
+
+  - name: reputation
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: listing__title
+        attrs:
+          - text
+
+  - name: shipping_from
+    instructions:
+      - props:
+          name: strong
+          text: Ships from
+        attrs:
+          - parent
+          - parent
+          - text
+    clean: \w+( \w+)*$
+
+  - name: shipping_to
+    instructions:
+      - props:
+          name: strong
+          text: Ships to
+        attrs:
+          - parent
+          - parent
+          - text
+    clean: \w+( \w+)*$
+  
+  - name: pgp
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: listing__title
+        attrs:
+          - text

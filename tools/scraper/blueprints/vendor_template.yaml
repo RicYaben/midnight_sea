@@ -1,0 +1,25 @@
+scraper: groups
+struct:
+  - name: username
+    instructions:
+      - props:
+
+  - name: pgp
+    instructions:
+      - props:
+
+  - name: path
+    instructions:
+      - props:
+
+  - name: reputation
+    instructions:
+      - props:
+
+  - name: shiping_from
+    instructions:
+      - props:
+
+  - name: shiping_to
+    instructions:
+      - props:

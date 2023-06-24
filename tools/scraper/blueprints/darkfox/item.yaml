@@ -1,0 +1,54 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: a
+          attrs:
+            href: \#
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: pre-line
+        attrs:
+          - get_text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: ul
+          attrs:
+            class: has-text-left
+      - props:
+          name: strong
+        attrs:
+          - text
+
+  - name: currency
+    fixed: USD
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: a
+              attrs:
+                href: /user/
+            attrs:
+              - text
+      - name: path
+        instructions:
+          - props:
+              name: a
+              attrs:
+                href: /user/
+            attrs:
+              - href

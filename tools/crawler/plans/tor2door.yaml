@@ -1,0 +1,94 @@
+meta:
+  market: tor2door
+  domain: http://t2didmjqj7yqzlc44oiqmwr3u62xdg4pvzfrtxdy2wsewgrt2zelwhyd.onion/en
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          # Login Page
+          # NOTE: initial does not get the captcha page. Revise!
+          - name: captcha
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    id: captcha
+                  limit: 1
+
+          - name: clock
+            instructions:
+              - props:
+                  name: select
+                  attrs:
+                    name: "clock[hour]"
+                  limit: 1
+
+          - name: clock
+            instructions:
+              - props:
+                  name: img
+                  attrs:
+                    src: captcha/clock/image
+
+          - name: login
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    id: username
+                  limit: 1
+  vendor:
+    options:
+      path: "?tab=pgp"
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: card product-card
+              - props:
+                  name: a
+                  attrs:
+                    href: /products/
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+        instructions:
+          - props:
+              name: a
+              attrs:
+                rel: next
+            attrs:
+              - href
+
+    pages:
+      - name: Fraud
+        path: products?category=1
+
+      - name: Digital Products
+        path: products?category=3
+
+      - name: Counterfeit
+        path: products?category=4
+
+      - name: Services
+        path: products?category=6
+
+      - name: Software and hosting
+        path: products?category=7
+
+      - name: Others
+        path: products?category=8

@@ -1,0 +1,83 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: breadcrumbs
+          limit: 1
+      - props:
+          name: h4
+          limit: 1
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: h5
+          text: Description
+        attrs:
+          - parent
+      - props:
+          name: div
+          attrs:
+            class: white-space-formatted
+          limit: 1
+        attrs:
+          - text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: label
+          attrs:
+            class: clr-control-label
+          text: Price
+        attrs:
+          - parent
+          - parent
+          - text
+
+  - name: currency
+    clean: \w+$
+    instructions:
+      - props:
+          name: label
+          attrs:
+            class: clr-control-label
+          text: Price
+        attrs:
+          - parent
+          - parent
+          - text
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: listing-view-component
+          - props:
+              name: a
+              attrs:
+                href: /profile/view/
+            attrs:
+              - text
+      - name: path
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: listing-view-component
+          - props:
+              name: a
+              attrs:
+                href: /profile/view/
+            attrs:
+              - href

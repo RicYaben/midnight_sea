@@ -1,0 +1,68 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: listing__title
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: tabs__content
+          limit: 1
+        attrs:
+          - text
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+          name: span
+          attrs:
+            class: currency
+        attrs:
+          - text
+
+  - name: currency
+    clean: \w+$
+    instructions:
+      - props:
+          name: span
+          attrs:
+            class: currency
+        attrs:
+          - text
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: listing__vendor
+          - props:
+              name: a
+              attrs:
+                href: /user/
+            attrs:
+              - text
+      - name: path
+        instructions:
+          - props:
+              name: div
+              attrs:
+                class: listing__vendor
+          - props:
+              name: a
+              attrs:
+                href: /user/
+            attrs:
+              - href

@@ -1,0 +1,24 @@
+scraper: groups
+struct:
+  - name: username
+    clean: .*(?= \(.*)
+    instructions:
+      - props:
+          name: label
+          string: Username
+        attrs:
+          - parent
+          - parent
+      - props:
+          name: td
+        attrs:
+          - text
+
+  - name: pgp
+    instructions:
+      - props:
+          name: textarea
+          attrs:
+            class: pgp-key-text
+        attrs:
+          - text

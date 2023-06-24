@@ -1,0 +1,26 @@
+scraper: groups
+struct:
+  - name: title
+    instructions:
+      - props:
+
+  - name: description
+    instructions:
+      - props:
+
+  - name: price
+    clean: (\d\d*[.]?\d*)
+    instructions:
+      - props:
+
+  - name: currency
+    clean: \w+$
+    instructions:
+      - props:
+
+  - name: vendor
+    fields:
+      - name: username
+        clean: .*(?=\s\(.*\))
+        instructions:
+          - props:

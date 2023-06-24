@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+// Ignored in Python
+package scraper;
+
+import "google/protobuf/struct.proto";
+
+service Scraper{
+    rpc Scrape (ScrapeRequest) returns (ScrapeResponse) {}
+}
+
+/** 
+* Scrape
+*/
+
+// Request to scrape the content from some file
+message ScrapeRequest{
+    string market = 1;
+    string model = 2;
+    bytes data = 3;
+}
+
+// Response with the content of the page
+message ScrapeResponse{
+    google.protobuf.Struct content = 1;
+}

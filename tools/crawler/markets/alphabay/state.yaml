@@ -1,0 +1,8 @@
+Fraud:
+- last: listing_category?id=2
+  last_crawl: 2022-09-20 10:32:03.297196
+  path: listing_category?id=2
+  url: null
+- last_crawl: 2022-09-17 08:57:19.686658
+  path: listing_category?id=3
+- path: listing_category?id=4

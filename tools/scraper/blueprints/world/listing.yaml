@@ -1,0 +1,58 @@
+scraper: simple
+struct:
+  - name: title
+    instructions:
+      - props:
+          name: a
+          attrs:
+            href: /listing/
+            class: active
+          limit: 1
+        attrs:
+          - text
+
+  - name: description
+    instructions:
+      - props:
+          name: p
+          attrs:
+            class: mtss
+        attrs:
+          - text
+
+  - name: price
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: product-view__price mts
+      - props:
+          name: span
+        attrs:
+          - text
+    clean: (\d\d*[.,]?\d*)
+
+  - name: currency
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: product-view__price mts
+      - props:
+          name: span
+        attrs:
+          - text
+    clean: ^(\w+)
+
+  - name: vendor
+    instructions:
+      - props:
+          name: div
+          attrs:
+            class: product-view__right
+      - props:
+          name: a
+          attrs:
+            class: vendor
+        attrs:
+          - text
