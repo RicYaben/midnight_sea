@@ -1,4 +1,5 @@
-> ATTENTION: Version 1.0 is underway and planned for mid August 2023 (includes major changes).
+| :warning: WARNING: ATTENTION: Version 1.0 is underway and planned for mid August 2023 (includes major changes). |
+| --------------------------------------------------------------------------------------------------------------- |
 
 # Midnight Sea
 
@@ -24,9 +25,9 @@ Currently, MS does not solve CAPTCHA nor automatically login into marketplaces. 
 
 MS will tell you if other issues arise, such as "kill path" (i.e., your Tor circuit has been blocked). To solve this, it is enough to restart the Proxy service.
 
----
-
 The container includes the following services:
+
+<div align="center">
 
 | Service   | Description                                                   |
 | --------- | ------------------------------------------------------------- |
@@ -37,3 +38,24 @@ The container includes the following services:
 | PgAdmin   | A visual tool to manage the database                          |
 | Proxy     | A proxy service for Tor and I2P                               |
 | pgBackups | A service that backup the postgres database once every 30 min |
+
+</div>
+
+---
+
+## Publications
+
+- Georgoulias, D., Yaben, R., & Vasilomanolakis, E. (Accepted/In press). Cheaper than you thought? A dive into the darkweb market of cyber-crime products. In Proceedings of The 18th International Conference on Availability, Reliability and Security (ARES 2023) ACM. [[link](https://orbit.dtu.dk/en/publications/cheaper-than-you-thought-a-dive-into-the-darkweb-market-of-cyber-)]
+
+## How do I cite Midnight Sea?
+
+For now, cite [this paper](https://orbit.dtu.dk/en/publications/cheaper-than-you-thought-a-dive-into-the-darkweb-market-of-cyber-) or use the following citation:
+
+```latex
+@software{midnightsea,
+	title        = {Midnight Sea},
+	author       = {Ricardo Yaben},
+	url          = {https://github.com/RicYaben/midnight\%5Fsea},
+	version      = {0.1.0}
+}
+```
