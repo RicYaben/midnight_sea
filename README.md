@@ -1,5 +1,5 @@
-| :warning: WARNING: ATTENTION: Version 1.0 is underway and planned for mid August 2023 (includes major changes). |
-| --------------------------------------------------------------------------------------------------------------- |
+| :warning: ATTENTION: Version 1.0 is underway and planned for mid August 2023 (includes major changes). |
+| ------------------------------------------------------------------------------------------------------ |
 
 # Midnight Sea
 
