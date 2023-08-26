@@ -43,7 +43,7 @@ RUN apt-get update && apt-get upgrade -y \
 RUN pip install --upgrade pip
 
 # Installing `poetry` package manager:
-RUN pip install poetry  && poetry --version
+RUN pip install poetry && poetry --version
 
 RUN mkdir /usr/src/${PROJECT}_${SERVICE} /usr/src/local\
     # Create the system account and give permissions

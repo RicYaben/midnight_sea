@@ -201,7 +201,7 @@ class SimpleScraper(Scraper):
 
             # If there is a value, add it to the data
             if value:
-                if not "many" in point:
+                if "many" not in point:
                     value = value.pop(0)
 
                 data[name] = value
@@ -239,7 +239,7 @@ class GroupedScraper(Scraper):
                 )
 
                 if value:
-                    if not "many" in group:
+                    if "many" not in group:
                         value: str = value.pop(0)
 
                     data[name] = value

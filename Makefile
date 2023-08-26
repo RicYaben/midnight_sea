@@ -1,15 +1,14 @@
-.PHONY: up down browser dump destroy
+.PHONY: venv browser dump
 
-# Put the container up
-up: 
-	@docker-compose -p midnight_sea -f deployments/docker-compose.yaml up -d --build
+.clean-venv:
+	rm -rf .venv
 
-# Put the container down
-down:
-	@docker-compose -p midnight_sea -f deployments/docker-compose.yaml down
+.venv:
+	poetry config virtualenvs.create true --local
+	poetry install --sync
 
-destroy:
-	@docker-compose -p midnight_sea -f deployments/docker-compose.yaml down -v
+.venv-%: .venv
+	poetry install --sync --only $*
 
 # Create a container with a TOR browser
 browser:

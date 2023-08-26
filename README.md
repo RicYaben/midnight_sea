@@ -1,10 +1,7 @@
-| :warning: ATTENTION: Version 1.0 is underway and planned for mid August 2023 (includes major changes). |
-| ------------------------------------------------------------------------------------------------------ |
-
 # Midnight Sea
 
-Midnight Sea (MS) is a crawler for "Dark Web" marketplaces.
-The tool can crawl any current marketplace, featuring a human-like behavior to bypass anti-crawling mechanisms and an efficient crawling strategy.
+Midnight Sea (MS) is a generic crawler for Dark Web marketplaces.
+MS features a human-like behavior to bypass anti-crawling mechanisms and a new crawling strategy.
 
 ## Usage
 

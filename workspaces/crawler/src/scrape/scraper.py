@@ -80,6 +80,7 @@ class Scraper:
 
             # If the branch is a single value, add it to the list
             # of results, otherwise, join the list of the results
+            # NOTE: This if condition is different in the other scraper
             if branch:
                 if isinstance(branch, list):
                     results += branch
