@@ -1,0 +1,4 @@
+service: crawler
+host: localhost
+port: 22001
+verbose: "DEBUG"
