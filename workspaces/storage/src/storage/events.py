@@ -313,7 +313,7 @@ def calcualte_reputation(market: str = None, recalculate: bool = False):
     ep = VendorEndpoint()
 
     # Get the vendors
-    vendors = get_vendors_feedback(market=market, all=recalculate)
+    vendors = get_vendors_feedback(market=market)
 
     for vendor in vendors:
         reputation = reputation_fn(
