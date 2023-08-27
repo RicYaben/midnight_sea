@@ -6,8 +6,8 @@ init: .clean-venv .venv
 	rm -rf .venv
 
 .venv:
-	poetry config virtualenvs.create true --local
-	poetry install --sync
+	pipx run poetry config virtualenvs.create true --local
+	pipx run poetry install --sync
 
 .venv-%: .venv
 	poetry install --sync --only $*

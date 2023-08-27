@@ -3,7 +3,7 @@ name = "crawler"
 version = "0.1.0"
 description = ""
 authors = ["Ricardo Yaben <rmyl@dtu.dk>"]
-packages = [{include = "src"}]
+packages = [{include = "crawler", from = "src"}]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -19,15 +19,15 @@ from typing import Any, Dict
 
 from sqlalchemy import or_
 from sqlalchemy.orm.collections import InstrumentedList
-from ms_storage.database.api import (
+from storage.database.api import (
     ApiFactory,
     ItemEndpoint,
     PageEndpoint,
     VendorEndpoint,
 )
-from ms_storage.volume.volume import volume
-from ms_storage.globals import logger
+from storage.volume.volume import volume
 
+from lib.logger import logger
 
 def get_pending_pages(market: str = None, limit: int = 100):
     """Returns a list of pending to scrape pages"""

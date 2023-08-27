@@ -15,18 +15,17 @@
 import os
 import json
 
-from typing import Any, Dict, Sequence
+from typing import Any
 from google.protobuf.struct_pb2 import Struct
 
-from ms_crawler.globals import VOLUME, logger
-from ms_crawler.client.interfaces import (
-    ExService,
-    Storage
-)
-
+from lib.logger import logger
 from lib.client.services import ServiceFactory, Service
 
 from crawler.strategies.content import Page
+from crawler.client.interfaces import (
+    ExService,
+    Storage
+)
 
 from crawler.protos.storage_pb2 import (
     PendingRequest,
@@ -40,11 +39,11 @@ from crawler.protos.storage_pb2_grpc import StorageStub
 class StorageService(ExService, Storage):
     _stub_class = StorageStub
 
-    def store(self, pages: Sequence[Page], market: str, model: str) -> bool:
+    def store(self, pages: list[Page], market: str, model: str) -> bool:
         """Send the content of the pages to the storage service
 
         Args:
-            pages (Sequence[Page]): Page objects
+            pages (list[Page]): Page objects
             market (str): Name of the market
             model (str): Name of the model in where the pages must be stored
         Returns:
@@ -65,7 +64,7 @@ class StorageService(ExService, Storage):
 
         return response
 
-    def pending(self, market: str, model: str) -> Sequence[Dict[Any, Any]]:
+    def pending(self, market: str, model: str) -> list[dict[Any, Any]]:
         """Returns the list of pending pages to be crawled
 
         Args:
@@ -78,20 +77,20 @@ class StorageService(ExService, Storage):
         request = PendingRequest(market=market, model=model)
         response = self.stub.Pending(request)
 
-        pages: Sequence[Page] = [Page(url=page) for page in response.pages]
+        pages: list[Page] = [Page(url=page) for page in response.pages]
 
         return pages
 
-    def check(self, market: str, model: str, pages: Sequence[str]) -> Sequence[str]:
+    def check(self, market: str, model: str, pages: list[str]) -> list[str]:
         """Return the list of pages that are found in the database with these attributes
 
         Args:
             market (str): Name of the market
             model (str): Name of the model as is in the database
-            pages (Sequence[str]): List of pages to check
+            pages (list[str]): List of pages to check
 
         Returns:
-            Sequence[Page]: List of pages found in the database
+            list[Page]: List of pages found in the database
         """
         request = CheckRequest(market=market, model=model, pages=pages)
         response = self.stub.Check(request)
@@ -101,13 +100,13 @@ class StorageService(ExService, Storage):
 
 @ServiceFactory.register("local_storage")
 class LocalStorageService(Service, Storage):
-    _pending: Sequence[Page] = []
+    _pending: list[Page] = []
 
-    def store(self, pages: Sequence[Page], market: str, model: str) -> bool:
+    def store(self, pages: list[Page], market: str, model: str) -> bool:
         """Method to store locally the content of the pages
 
         Args:
-            pages (Sequence[Page]): List of pages to store
+            pages (list[Page]): List of pages to store
             market (str): Name of the market to where they belong
 
         Returns:
@@ -119,7 +118,7 @@ class LocalStorageService(Service, Storage):
             fpath = [
                 p for p in [category] if p
             ]  # NOTE: The page already contains a "model" field!
-            local = os.path.join(VOLUME, "markets", market, model, *fpath)
+            local = os.path.join("dist", "markets", market, model, *fpath)
 
             logger.debug("Storing item %s in %s" % (page.pk, local))
 
@@ -143,7 +142,7 @@ class LocalStorageService(Service, Storage):
 
         return True
 
-    def pending(self, market: str, model: str) -> Sequence[Page]:
+    def pending(self, market: str, model: str) -> list[Page]:
         """This function returns the list of pending pages to crawl
 
         Args:
@@ -151,13 +150,13 @@ class LocalStorageService(Service, Storage):
             model (str): Name of the table/folder in where the data is stored
 
         Returns:
-            Sequence[Page]: A list of pending pages
+            list[Page]: A list of pending pages
         """
 
         # If there are pending files, returm them
         if not self._pending:
             # Check if the folder exists
-            local = os.path.join(VOLUME, "markets", market, model)
+            local = os.path.join("dist", "markets", market, model)
 
             if not os.path.exists(local):
                 os.makedirs(local)
@@ -185,24 +184,22 @@ class LocalStorageService(Service, Storage):
         """
 
         if self._pending:
-            filtered_pages: Sequence = list(
-                filter(lambda x: x.pk != identifier, self._pending)
-            )
+            filtered_pages: list = [x for x in self._pending if x.pk != identifier]
 
             self._pending = filtered_pages
 
-    def check(self, market: str, model: str, pages: Sequence[str]) -> Sequence[str]:
+    def check(self, market: str, model: str, pages: list[str]) -> list[str]:
         """Return the list of pages that are localised in the storage folder
 
         Args:
             market (str): Name of the market being crawled
             model (str): Name of the model in where the pages must be stored
-            pages (Sequence[str]): list of identifiers for the pages
+            pages (list[str]): list of identifiers for the pages
 
         Returns:
-            Sequence[str]: List of pages found in the storage
+            list[str]: List of pages found in the storage
         """
-        local = os.path.join(VOLUME, "markets", market, model)
+        local = os.path.join("dist", "markets", market, model)
 
         if not local:
             os.makedirs(local)
