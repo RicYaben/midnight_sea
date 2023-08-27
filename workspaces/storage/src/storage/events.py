@@ -267,29 +267,33 @@ def create_pending_vendors():
     page_ep = PageEndpoint()
 
     for vendor in vendors_without_page:
+        
         items = vendor.items
+        if not items:
+            continue
 
-        if items:
-            market = (items[0].page.market.name,)
-            # Semi-serialise the data into a json like object
-            serialised: dict = {
-                "url": vendor.path,
-                "market": {
-                    "name": market,
-                },
-                "page_type": "vendor",
-            }
+        market = (items[0].page.market.name,)
+        # Semi-serialise the data into a json like object
+        serialised: dict = {
+            "url": vendor.path,
+            "market": {
+                "name": market,
+            },
+            "page_type": "vendor",
+        }
 
-            # Attempt to find the page
-            instance = page_ep.find(url=vendor.path, market=market)
-            if not instance:
-                # Create the instance and store the page info
-                # NOTE: This will make that when the market is crawled next, it will crawl this vendors
-                instance = page_ep.store(force=False, **serialised)
+        # Attempt to find the page. If so, jump to the next
+        instance = page_ep.find(url=vendor.path, market=market)
+        if instance:
+            continue
 
-                # Update the page with the vendor and save
-                instance.vendor = vendor
-                instance.save()
+        # Create the instance and store the page info
+        # NOTE: This will make that when the market is crawled next, it will crawl these vendors
+        instance = page_ep.store(force=False, **serialised)
+
+        # Update the page with the vendor and save
+        instance.vendor = vendor
+        instance.save()
 
 
 def reputation_fn(
@@ -300,15 +304,15 @@ def reputation_fn(
     if negative and total:
         prc = 1 - (negative / total)
 
-        if disputes:
-            disputes_prc = 1 - (disputes / total)
-            prc = prc * disputes_prc
-
-        # Return the percentage
+        if not disputes:
+            return prc
+        
+        disputes_prc = 1 - (disputes / total)
+        prc = prc * disputes_prc
         return prc
 
 
-def calcualte_reputation(market: str = None, recalculate: bool = False):
+def calcualte_reputation(market: str = None):
     """Function to calculate the reputation of the vendors"""
     ep = VendorEndpoint()
 

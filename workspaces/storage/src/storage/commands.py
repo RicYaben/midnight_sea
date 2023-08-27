@@ -23,6 +23,8 @@ import argparse
 import sys
 from dataclasses import dataclass
 from typing import Callable, Protocol
+from lib.conf.config import Client
+from lib.stubs.factory import StubFactory
 
 from storage.events import (
     calcualte_reputation,
@@ -30,7 +32,13 @@ from storage.events import (
     re_scrape,
     scrape,
 )
-from lib.logger import logger
+
+scraper_client: Client = Client(
+    name="scraper",
+    address="scraper",
+    port=0,
+    local=False
+)
 
 
 class Command(Protocol):
@@ -142,21 +150,16 @@ class RescrapeCommand(Command):
 
     @staticmethod
     def handle(kwargs):
-        # TODO: Fix this `build_stubs` situation
-        stubs = build_stubs()
-        scraper = stubs.get_stub("scraper")
+        scraper = StubFactory.create_stub(scraper_client)
 
-        if not scraper:
-            logger.error("Scraper not loaded!")
-            return
-
-        re_scrape(
-            scraper=scraper,
-            market=kwargs.market,
-            extract=kwargs.extract,
-            keep_zip=kwargs.keepzip,
-            page_type=kwargs.page_type,
-        )
+        if scraper:
+            re_scrape(
+                scraper=scraper,
+                market=kwargs.market,
+                extract=kwargs.extract,
+                keep_zip=kwargs.keepzip,
+                page_type=kwargs.page_type,
+            )
 
 
 @CommandFactory.register("create_vendors")
@@ -200,9 +203,7 @@ class ScrapeCommand(Command):
 
     @staticmethod
     def handle(kwargs):
-        # TODO: Fix this `build_stubs` situation
-        stubs = build_stubs()
-        scraper = stubs.get_stub("scraper")
+        scraper = StubFactory.create_stub(scraper_client)
 
         if scraper:
             scrape(scraper=scraper, market=kwargs.market)
@@ -234,7 +235,6 @@ def parse_commands(args):
     manager = CommandManager()
     manager.add_arguments()
     manager.handle(args)
-
 
 def main():
     parse_commands(sys.argv[1:])
