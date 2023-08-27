@@ -19,20 +19,18 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        // Python
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.black-formatter",
-        // Config files
         "lextudio.restructuredtext-pack",
         "yzhang.markdown-all-in-one",
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-vscode.makefile-tools",
-        // Security
         "SonarSource.sonarlint-vscode",
-        "snyk-security.snyk-vulnerability-scanner"
-      ]
+        "snyk-security.snyk-vulnerability-scanner",
+        "ms-azuretools.vscode-docker"
+	    ]
     }
   }
 

@@ -1,11 +1,13 @@
-.PHONY: venv browser dump
+.PHONY: init browser dump protos
+
+init: .clean-venv .venv
 
 .clean-venv:
 	rm -rf .venv
 
 .venv:
-	poetry config virtualenvs.create true --local
-	poetry install --sync
+	pipx run poetry config virtualenvs.create true --local
+	pipx run poetry install --sync
 
 .venv-%: .venv
 	poetry install --sync --only $*
@@ -16,3 +18,11 @@ browser:
 
 dump:
 	docker exec -t postgres pg_dumpall -c -U user > dump.sql
+
+
+protos:
+	@python -m grpc_tools.protoc \
+	--proto_path=lib/src/lib/protos=resources/protos \
+	--python_out=. \
+	--grpc_python_out=. \
+	resources/protos/*.proto

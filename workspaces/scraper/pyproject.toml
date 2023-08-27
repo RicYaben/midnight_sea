@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "scraper"
+version = "0.1.0"
+description = ""
+authors = ["Ricardo Yaben <rmyl@dtu.dk>"]
+packages = [{include = "scraper", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+beautifulsoup4 = "^4.10.0"
+lxml = "^4.6.4"
+grpcio = "^1.43.0"
+grpcio-tools = "^1.43.0"
+pandas = "^1.4.1"
+PyYAML = "^6.0"
+lib = { path = "../../lib"}
