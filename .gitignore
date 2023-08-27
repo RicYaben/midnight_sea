@@ -117,16 +117,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Local files, certificates and more
-local/
-*.crt
-*.key
 
-# Local specific content
-crawler/markets
-records.csv
-response.txt
-response.html
-
-storage/pending/*
-storage/parsed/*
+# Poetry
+poetry.lock
+poetry.toml

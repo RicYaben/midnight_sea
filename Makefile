@@ -1,4 +1,6 @@
-.PHONY: venv browser dump
+.PHONY: init browser dump
+
+init: .clean-venv .venv
 
 .clean-venv:
 	rm -rf .venv
