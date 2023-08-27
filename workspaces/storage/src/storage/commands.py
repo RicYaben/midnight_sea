@@ -18,28 +18,19 @@ This should work as a command line program in this form:
 
 $ python -m ms_storage.commands <command name> <args>
 """
-import os
-from pathlib import Path
-
-if not os.environ.get("SERVICE"):
-    from dotenv import load_dotenv
-
-    load_dotenv(dotenv_path=Path("deployments/local.env"))
-
 
 import argparse
 import sys
 from dataclasses import dataclass
 from typing import Callable, Protocol
 
-from ms_storage.client.client import build_stubs
-from ms_storage.events import (
+from storage.events import (
     calcualte_reputation,
     create_pending_vendors,
     re_scrape,
     scrape,
 )
-from ms_storage.globals import logger
+from lib.logger import logger
 
 
 class Command(Protocol):
@@ -151,6 +142,7 @@ class RescrapeCommand(Command):
 
     @staticmethod
     def handle(kwargs):
+        # TODO: Fix this `build_stubs` situation
         stubs = build_stubs()
         scraper = stubs.get_stub("scraper")
 
@@ -176,7 +168,7 @@ class CreateVendorPagesCommand(Command):
 
     @staticmethod
     def add_arguments(parser):
-        pass
+        raise NotImplementedError
 
     @staticmethod
     def handle(kwargs):
@@ -208,6 +200,7 @@ class ScrapeCommand(Command):
 
     @staticmethod
     def handle(kwargs):
+        # TODO: Fix this `build_stubs` situation
         stubs = build_stubs()
         scraper = stubs.get_stub("scraper")
 

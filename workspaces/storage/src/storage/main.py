@@ -17,49 +17,35 @@
 
 import sys
 import multiprocessing
-import time
-from ms_storage.client.client import build_stubs
-from ms_storage.database.database import get_database
-from ms_storage.events import scrape
-
-from ms_storage.globals import *
-from ms_storage.server.handlers import add_handlers
-from ms_storage.server.server import build_server, read_creds, start_server
-
-"""
-def scrape_event_loop():
-    logger.info("Starting scrape event loop...")
-    scraper = build_stubs().get_stub("scraper")
-
-    while True:
-        scrape(scraper=scraper)
-        time.sleep(30)
-"""
 
 
-def main() -> None:
-    logger.info("Starting %s..." % SERVICE)
+from storage.database.database import get_database
+
+
+from lib.server.factory import ServerFactory, start_server
+from lib.conf.config import Config
+
+import hydra
+from hydra.core.config_store import ConfigStore
+
+cs = ConfigStore.instance()
+# Registering the Config class with the name 'config'.
+cs.store(name="config", node=Config)
+
+@hydra.main(version_base=None, config_name="config")
+def main(cfg: Config) -> None:
     # Read the credentials and build the server
-    creds = read_creds(CERTS)
-    server = build_server(*creds, port=PORT)
-
-    # Add the endpoint handlers
-    add_handlers(server)
+    server = ServerFactory.create_server(host=cfg.host, workers=10)
 
     # Create a database connection and load the models
-    get_database()
+    _ = get_database()
 
     # Start the server
-    server = multiprocessing.Process(target=start_server, args=(server,))
-    server.start()
-
-    # Scrape event loop
-    #s_loop = multiprocessing.Process(target=scrape_event_loop)
-    #s_loop.start()
+    srv_workers = multiprocessing.Process(target=start_server, args=(server,))
+    srv_workers.start()
 
     # Block the main process until the server dies and the scraping dies
-    server.join()
-    #s_loop.join()
+    srv_workers.join()
 
 
 if __name__ == "__main__":

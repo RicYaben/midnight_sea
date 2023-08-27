@@ -17,17 +17,20 @@
 
 import sys
 
-from scraper.server.handlers import add_handlers
-from scraper.server.server import build_server, read_creds, start_server
+from lib.server.factory import ServerFactory, start_server
+from lib.conf.config import Config
 
+import hydra
+from hydra.core.config_store import ConfigStore
 
-def main() -> None:
+cs = ConfigStore.instance()
+# Registering the Config class with the name 'config'.
+cs.store(name="config", node=Config)
+
+@hydra.main(version_base=None, config_name="config")
+def main(cfg: Config) -> None:
     # Read the credentials and build the server
-    creds = read_creds("dist")
-    server = build_server(*creds, port=0)
-
-    # Add the endpoint handlers
-    add_handlers(server)
+    server = ServerFactory.create_server(host=cfg.host, workers=10)
 
     # Start the server
     start_server(server)

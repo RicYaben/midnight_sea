@@ -1,4 +1,4 @@
-# Copyright 2023 Ricardo Yaben
+# Copyright 2023 Ricardo Yabenfield
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,9 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import inspect
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, Sequence
+import types
+from typing import Any
 
 from bs4 import BeautifulSoup
 
@@ -43,7 +45,7 @@ class Scraper:
     def process(
         self,
         content,
-        instructions: Sequence[Dict[Any, Any]],
+        instructions: list[dict[Any, Any]],
         clean_expr: str = None,
     ):
         # Continue only if there is content or an instruction
@@ -52,7 +54,7 @@ class Scraper:
             return content
 
         instruction = instructions.pop(0)
-        results: Sequence = []
+        results: list = []
 
         # Find the element(s)
         props = instruction.get("props")
@@ -84,7 +86,7 @@ class Scraper:
 
         return results
 
-    def map_properties(self, prop) -> Dict[Any, Any]:
+    def map_properties(self, prop) -> dict[Any, Any]:
 
         if hasattr(prop, "items"):
             # Iterate through the property items
@@ -102,10 +104,20 @@ class Scraper:
 
     def get_attribute(self, content, attribute):
         # Get the attribute from the object or access the property
-        attr = getattr(content, attribute, None) or content.get(attribute)
+        attr = getattr(content, attribute, None)
+
+        # If the attribute was a method rather than an attribute, call it.
+        if inspect.ismethod(getattr(content, attribute)):
+            attr = attr()
+
+        if not attr:
+            attr = content.get(attribute)
 
         # Remove extra spaces at both ends of the string
         if isinstance(attr, str):
             attr = attr.strip()
 
         return attr
+    
+    def hasmethod(self, obj, name):
+        return hasattr(obj, name) and type(getattr(obj, name)) == types.MethodType

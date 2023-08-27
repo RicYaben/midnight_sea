@@ -12,3 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from lib.stubs.interfaces import Stub
+
+
+class Scraper(Stub):
+    def scrape(self, model: str, market: str, data: bytes):
+        raise NotImplementedError

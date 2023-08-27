@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ms_storage.client.interfaces import ExService, Scraper, ServiceFactory
-from ms_storage.protos.scraper_pb2 import ScrapeRequest
-from ms_storage.protos.scraper_pb2_grpc import ScraperStub
+from lib.stubs.factory import StubFactory
+from scraper.client.interfaces import Scraper
+from lib.protos.scraper_pb2 import ScrapeRequest
+from lib.protos.scraper_pb2_grpc import ScraperStub
 
 from google.protobuf import json_format
 
 
-@ServiceFactory.register("scraper")
-class ScraperService(ExService, Scraper):
+@StubFactory.register("scraper")
+class ScraperService(Scraper):
     _stub_class = ScraperStub
 
     def scrape(self, model: str, market: str, data: bytes):

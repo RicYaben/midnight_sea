@@ -12,21 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ms_storage.server.interfaces import Service, ServiceFactory
-from ms_storage.database.api import (
-    PageEndpoint,
-)
-
-from ms_storage.volume.volume import volume
+from storage.database.api import PageEndpoint
+from storage.volume.volume import volume
 
 # Although the name is confusing, this refers to the server/client connection between
 # the crawler and the storage services
-from ms_storage.protos import storage_pb2_grpc
-from ms_storage.protos import storage_pb2
+from lib.protos import storage_pb2_grpc
+from lib.protos import storage_pb2
 
 
-@ServiceFactory.register("Storage")
-class Storage(storage_pb2_grpc.StorageServicer, Service):
+class Storage(storage_pb2_grpc.StorageServicer):
     """Endpoint for the Storage functions"""
 
     def Store(self, request, context) -> storage_pb2.StoreResponse:

@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ms_scraper.protos import scraper_pb2, scraper_pb2_grpc
-from ms_scraper.scraper.scraper import scrape
-from ms_scraper.server.interfaces import Service, ServiceFactory
-from google.protobuf.struct_pb2 import Struct
+from lib.protos import scraper_pb2, scraper_pb2_grpc
+from scraper.scraper.scraper import scrape
+from google.protobuf.struct_pb2 import Struct, ScrapeResponse
 
 
-@ServiceFactory.register("Scraper")
-class Scraper(scraper_pb2_grpc.ScraperServicer, Service):
+class Scraper(scraper_pb2_grpc.ScraperServicer):
     """Endpoint for the Scraper functions"""
 
     def Scrape(self, request, context) -> scraper_pb2.ScrapeResponse:
