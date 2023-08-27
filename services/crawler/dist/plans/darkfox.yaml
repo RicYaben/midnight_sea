@@ -1,0 +1,109 @@
+# Copyright 2023 Ricardo Yaben
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+meta:
+  market: darkfox
+  domain: http://57d5j6hfzfpsfev6c7f5ltney5xahudevvttfmw4lrtkt42iqdrkxmqd.onion
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          - name: login
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    placeholder: Enter Captcha
+
+          - name: captcha
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    class: captchacode
+          - name: queue
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: queue-graphic
+
+          - name: dos
+            instructions:
+              - props:
+                  string: 403 DDOS
+
+          - name: broken
+            instructions:
+              - props:
+                  name: h1
+                  string: 404 Not Found
+  vendor:
+    options:
+      path: "/pgp"
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: card
+              - props:
+                  name: a
+                  attrs:
+                    href: product/
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+        instructions:
+          - props:
+              name: a
+              attrs:
+                class: pagination-next
+            attrs:
+              - href
+
+    pages:
+      - name: Fraud
+        path: category/e984b8ad-bb2e-4b6a-9054-9672a3b91c36
+
+      - name: Guides and Tutorials
+        path: category/30739153-1fcd-45cd-b919-072b439c6e06
+
+      - name: Digital Products
+        path: category/0e384d5f-26ef-4561-b5a3-ff76a88ab781
+
+      - name: Software and Malware
+        path: category/6b71210f-f1f9-4aa3-8f89-bd9ee28f7afc
+
+      - name: Services
+        path: category/b9dc5846-5024-421e-92e6-09ba96a03280
+
+      - name: Miscellaneous
+        path: category/fd1c989b-1a74-4dc0-92b0-67d8c1c487cb
+
+      - name: Hosting and Security
+        path: category/5233fd6a-72e6-466d-b108-5cc61091cd14

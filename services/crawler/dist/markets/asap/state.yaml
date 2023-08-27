@@ -1,0 +1,56 @@
+# Copyright 2023 Ricardo Yaben
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+Barbiturates:
+  - last: search?categoryId=ae728535-e367-4848-8ab1-5bca767d5202
+    last_crawl: 2022-04-06 08:44:05.491211
+    path: search?categoryId=ae728535-e367-4848-8ab1-5bca767d5202
+    url: null
+Benzos:
+  - last: /search?page=8&categoryId=2704937a-22d0-4642-9e6b-f4623e6750d7&currency=USD&sortType=None
+    last_crawl: 2022-04-06 08:43:56.270675
+    path: search?categoryId=2704937a-22d0-4642-9e6b-f4623e6750d7
+    url: null
+Counterfeits:
+  - last: /search?page=2&categoryId=3e709c77-3e09-46a9-9bc4-ddc7c617bfbd&currency=USD&sortType=None
+    last_crawl: 2022-04-06 08:42:53.306975
+    path: search?categoryId=3e709c77-3e09-46a9-9bc4-ddc7c617bfbd
+    url: /search?page=3&categoryId=3e709c77-3e09-46a9-9bc4-ddc7c617bfbd&currency=USD&sortType=None
+Digital goods:
+  - last: /search?page=8&categoryId=cf0b497b-bbb4-4685-85df-f15f658f0372&currency=USD&sortType=None
+    last_crawl: 2022-04-06 08:42:24.984514
+    path: search?categoryId=cf0b497b-bbb4-4685-85df-f15f658f0372
+    url: /search?page=9&categoryId=cf0b497b-bbb4-4685-85df-f15f658f0372&currency=USD&sortType=None
+Drug paraphernalia:
+  - last_crawl: 2022-04-06 08:45:24.716192
+    path: search?categoryId=03a515e4-1026-4862-8747-56d65ec385e2
+Fraud:
+  - last: /search?page=13&categoryId=6a99b55b-8258-4aa8-b75e-678fd4cda86d&currency=USD&sortType=None
+    last_crawl: 2022-04-06 08:43:26.465837
+    path: search?categoryId=6a99b55b-8258-4aa8-b75e-678fd4cda86d
+    url: /search?page=14&categoryId=6a99b55b-8258-4aa8-b75e-678fd4cda86d&currency=USD&sortType=None
+RCs:
+  - last: search?categoryId=119764f4-4490-4a2f-939a-3b9dc1b189dc
+    last_crawl: 2022-04-06 08:44:14.165565
+    path: search?categoryId=119764f4-4490-4a2f-939a-3b9dc1b189dc
+    url: null
+Steroids:
+  - last: /search?page=20&categoryId=f9934eed-e35c-4201-8afc-59a4b60d09ce&currency=USD&sortType=None
+    path: search?categoryId=f9934eed-e35c-4201-8afc-59a4b60d09ce
+    url: /search?page=21&categoryId=f9934eed-e35c-4201-8afc-59a4b60d09ce&currency=USD&sortType=None
+Stimulants:
+  - last: /search?page=25&categoryId=481cf3cf-396e-4741-91b5-25fe9505c721&currency=USD&sortType=None
+    last_crawl: 2022-04-06 08:44:56.326412
+    path: search?categoryId=481cf3cf-396e-4741-91b5-25fe9505c721
+    url: /search?page=26&categoryId=481cf3cf-396e-4741-91b5-25fe9505c721&currency=USD&sortType=None
