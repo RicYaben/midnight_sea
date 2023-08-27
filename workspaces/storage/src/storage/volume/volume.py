@@ -21,7 +21,7 @@ import uuid
 import zipfile
 
 from dataclasses import dataclass
-from ms_storage.globals import VOLUME, logger
+from lib.logger import logger
 
 
 @dataclass
@@ -35,8 +35,8 @@ class Volume:
         _ZIP_MAX_FILES: maximum amount of files included in the zip file
     """
 
-    _pending: str = os.path.join(VOLUME, "pending")
-    _parsed: str = os.path.join(VOLUME, "parsed")
+    _pending: str = os.path.join("dist", "pending")
+    _parsed: str = os.path.join("dist", "parsed")
     _ZIP_MAX_FILES: int = 1000
     _ZIP: str = "*.zip"
 
@@ -123,20 +123,19 @@ class Volume:
                 expression=self._ZIP, market=market, page_type=page_type
             )
 
-        # Get the ZIP file
-        zipfile: zipfile.ZipFile = zipfile.ZipFile(zip_filepath, mode="a")
+        with zipfile.ZipFile(zip_filepath, mode="a") as zipfile:
+            # Check if the zip file has room to include more files.
+            # Otherwise, create a new ID for the file and repeat the process
+            if len(zipfile.namelist()) < self._ZIP_MAX_FILES:
+                # Write the file into the zip file
+                zipfile.write(filepath, name, zipfile.ZIP_DEFLATED)
+                zipfile.close()
 
-        # Check if the zip file has room to include more files.
-        # Otherwise, create a new ID for the file and repeat the process
-        if len(zipfile.namelist()) < self._ZIP_MAX_FILES:
-            # Write the file into the zip file
-            zipfile.write(filepath, name, zipfile.ZIP_DEFLATED)
-            zipfile.close()
+                # Remove the file from the directory
+                os.remove(filepath)
 
-            # Remove the file from the directory
-            os.remove(filepath)
-
-            return zip_filepath
+                return zip_filepath
+        
 
         # Create a new UUID to be used as the name of the zip file
         timestamp: str = time.strftime("%Y_%m_%d-%H_%M")

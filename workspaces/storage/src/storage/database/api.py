@@ -18,9 +18,9 @@ from sqlalchemy import Sequence, inspect
 from sqlalchemy.types import Float, Integer
 from dataclasses import dataclass, field
 
-from ms_storage.globals import logger
-from ms_storage.database.models import Item, Page, Vendor
-from ms_storage.database.database import Database, get_database
+from lib.logger import logger
+from storage.database.models import Item, Page, Vendor
+from storage.database.database import Database, get_database
 from sqlalchemy_utils.types.choice import ChoiceType
 
 
@@ -74,7 +74,6 @@ class ApiEndpoint(ApiEndpointProtocol):
 
         # Set the values
         for field_name, val in params.items():
-            # val = self._format_field(value=val, field_name=field_name)
             setattr(instance, field_name, val)
 
         # Update the instance with the values of the related fields using their
@@ -126,7 +125,7 @@ class ApiEndpoint(ApiEndpointProtocol):
         for c in columns:
             if c.name == field_name:
                 col_type = type(c.type)
-                if not col_type in fields:
+                if col_type not in fields:
                     return value
 
                 t = fields[col_type]
@@ -263,8 +262,6 @@ class PageEndpoint(ApiEndpoint):
 
         if page_type:
             q = q.filter(self.model.page_type == page_type)
-
-        # q = q.filter(self.model.status_code <= 300)
 
         # Limit the query to 50 items, to make it manageable
         q = q.limit(50).all()

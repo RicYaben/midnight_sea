@@ -13,6 +13,4 @@
 # limitations under the License.
 
 # Necessary Imports for the "ServiceFactory" to register the services
-from crawler.client.services import core, planner, storage
-
 

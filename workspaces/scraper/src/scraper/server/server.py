@@ -22,7 +22,8 @@ from concurrent import futures
 from typing import Tuple
 
 import grpc
-from ms_scraper.globals import PORT, logger
+
+from lib.logger import logger
 
 
 def read_creds(certs: str) -> Tuple[bytes, bytes]:
@@ -44,7 +45,6 @@ def read_creds(certs: str) -> Tuple[bytes, bytes]:
 
     # Validate the paths
     if not (os.path.isfile(key_p) and os.path.isfile(chain_p)):
-        # raise FileNotFoundError("Chain or Key not found")
         logger.error(FileNotFoundError("Chain or Key not found"))
         return None, None
 
@@ -62,8 +62,8 @@ def read_creds(certs: str) -> Tuple[bytes, bytes]:
 def build_server(
     private_key: bytes,
     cert_chain: bytes,
+    port: int,
     hostname: str = "[::]",
-    port: int = PORT,
     workers: int = 10,
 ) -> grpc.Server:
 

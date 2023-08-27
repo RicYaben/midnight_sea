@@ -18,13 +18,13 @@ Creates an Api Endpoint that allows communication with the Storage service.
 import grpc
 import sys
 
-from ms_storage.server.interfaces import Service, ServiceFactory
+from storage.server.interfaces import Service, ServiceFactory
 
 # Handlers
-from ms_storage.protos import storage_pb2_grpc
+from storage.protos import storage_pb2_grpc
 
 # Services to register
-from ms_storage.server.services import storage
+from storage.server.services import storage
 
 
 def lazy_get_handler(service: str):

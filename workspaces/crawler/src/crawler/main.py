@@ -16,8 +16,8 @@
 Main entrypoint for the application
 """
 
-from lib.conf.config import ServiceConfig
-from crawler.flags import parse_flags
+from lib.conf.interfaces import ServiceConfig
+from crawler.flags import load_flags
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -28,7 +28,7 @@ cs.store(name="config", node=ServiceConfig)
 
 @hydra.main(version_base=None, config_name="config")
 def main(cfg: ServiceConfig):
-    parse_flags(cfg)
+    load_flags(cfg)
 
 if __name__ == "__main__":
     main()

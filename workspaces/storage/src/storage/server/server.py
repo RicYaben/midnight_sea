@@ -23,7 +23,7 @@ from concurrent import futures
 from typing import Tuple
 
 import grpc
-from ms_storage.globals import PORT, logger
+from lib.logger import logger
 
 
 def read_creds(certs: str) -> Tuple[bytes, bytes]:

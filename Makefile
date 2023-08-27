@@ -1,4 +1,4 @@
-.PHONY: init browser dump
+.PHONY: init browser dump protos
 
 init: .clean-venv .venv
 
@@ -18,3 +18,11 @@ browser:
 
 dump:
 	docker exec -t postgres pg_dumpall -c -U user > dump.sql
+
+
+protos:
+	@python -m grpc_tools.protoc \
+	--proto_path=lib/src/lib/protos=resources/protos \
+	--python_out=. \
+	--grpc_python_out=. \
+	resources/protos/*.proto

@@ -15,7 +15,7 @@
 import re
 import tempfile
 
-from typing import Any, Dict
+from typing import Any
 from dataclasses import dataclass, field
 
 import requests
@@ -33,7 +33,7 @@ class Page:
     """
 
     url: str
-    meta: Dict[Any, Any] = field(default_factory=dict)
+    meta: dict[Any, Any] = field(default_factory=dict)
     status_code: int = 0
 
     _file: tempfile.TemporaryFile = None
@@ -42,7 +42,7 @@ class Page:
     @property
     def crawled(self) -> bool:
         # Return True if there is a file
-        return self._file != None
+        return self._file is not None
 
     @property
     def data(self) -> bytes:
@@ -83,10 +83,63 @@ class Page:
             self._file.close()
             self._file = None
 
-    def serialize(self) -> Dict[Any, Any]:
+    def serialize(self) -> dict[Any, Any]:
         ret: dict = dict(
             url=self.url,
             data=self.data,
             meta=self.meta,
         )
         return ret
+
+
+
+@dataclass
+class PageParser:
+    rex = re.compile(r"\$\{(?P<var>.*?)\}")
+
+    def parse_to_pages(self, page: dict) -> list[Page]:
+        path: str = page.get("path")
+        ret = []
+
+        if "vars" in page:
+            v: dict = page.get("vars")
+
+            for key, val in v.items():
+                fn = getattr(self, f"replace_{key}")
+                res = fn(path, val)
+                ret += res
+        else:
+            ret = [path]
+
+        name = page.get("name")
+        pages = [Page(url=page, meta=dict(category=name)) for page in ret]
+
+        return pages
+
+    def replace_list(self, path, ls) -> list:
+        ret = []
+        for i in ls:
+            sub = re.sub(self.rex, str(i), path)
+            ret.append(sub)
+        return ret
+
+    def replace_range(self, path, ran) -> list:
+        start, stop = ran
+        ret = []
+        for i in range(start, stop + 1):
+            sub = re.sub(self.rex, str(i), path)
+            ret.append(sub)
+        return ret
+
+
+def make_pages(sects) -> list[Page]:
+    # Load the pages
+    ret = []
+    parser = PageParser()
+
+    for sections in sects.values():
+        for page in sections:
+            res: list = parser.parse_to_pages(page)
+            ret += res
+
+    return ret

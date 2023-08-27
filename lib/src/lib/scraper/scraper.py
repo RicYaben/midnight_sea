@@ -20,10 +20,8 @@ from bs4 import BeautifulSoup
 
 @dataclass
 class Scraper:
-    """Base Scraper class that implements the scraper protocol
-
-    It can not be used alone, as it does not implement the "scrape" method
-    """
+    """Base Scraper class that implements the scraper protocol"""
+    # TODO: Add the scrape method
 
     content: BeautifulSoup = field(default_factory=BeautifulSoup)
 

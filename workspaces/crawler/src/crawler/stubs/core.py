@@ -1,4 +1,4 @@
-# Copyright 2023 Ricardo Yaben
+# Copyright 2023 Ricardo YabenAny
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,32 +15,27 @@
 import json
 import os
 
-from typing import Any, Dict
+from typing import Any
 
 from google.protobuf import message, json_format
 
-
 from lib.logger import logger
-from lib.client.services import ServiceFactory, Service
+from lib.stubs.factory import StubFactory
 
-from crawler.client.interfaces import (
-    Core,
-    ExService,
-)
-
-from crawler.protos.crawler_pb2_grpc import CrawlerStub
-from crawler.protos.crawler_pb2 import CookiesRequest, MarketRequest
+from crawler.stubs.interfaces import Core
+from lib.protos.crawler_pb2_grpc import CrawlerStub
+from lib.protos.crawler_pb2 import CookiesRequest, MarketRequest
 
 
-@ServiceFactory.register("core")
-class CoreService(ExService, Core):
-    _stub_class = CrawlerStub
+@StubFactory.register("core")
+class CoreService(Core):
+    _stub_cls = CrawlerStub
     _timeout: int = 600  # 10 min
 
     def __init__(self, host: str, port: int, cert: bytes) -> None:
         super().__init__(host, port, cert)
 
-    def cookies(self, market: str) -> Dict[Any, Any]:
+    def cookies(self, market: str) -> dict[Any, Any]:
         if self.locked:
             ticket = self.Ticket()
             self._q.put(ticket)
@@ -74,8 +69,8 @@ class CoreService(ExService, Core):
         return response.market
 
 
-@ServiceFactory.register("local_core")
-class LocalCoreService(Service, Core):
+@StubFactory.register("core", True)
+class LocalCoreService(Core):
     """Local Core Service.
 
     Interacts with the host shell to prompt for the market and cookies

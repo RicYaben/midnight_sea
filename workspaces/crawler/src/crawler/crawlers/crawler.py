@@ -18,13 +18,12 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 import os
 import urllib.parse
-from typing import Any, Callable, Dict, Protocol, Sequence
+from typing import Any, Callable, Protocol, Sequence
 
-from ms_crawler.globals import VOLUME, logger
-from ms_crawler.scrape.scraper import (
-    Scraper,
-)  # Copy of the dnm_scraper scraper class, temporary solution
-from ms_crawler.session.session import SessionManager
+from lib.logger import logger
+from lib.scraper.scraper import Scraper
+
+from crawler.session.session import SessionManager
 
 
 @dataclass
@@ -83,8 +82,8 @@ class StatusCodeValidator(Validator):
 @ValidatorFactory.register("content")
 @dataclass
 class ContentValidator(Validator):
-    invalid: Sequence[Dict[Any, Any]] = field(default_factory=list)
-    required: Sequence[Dict[Any, Any]] = field(default_factory=list)
+    invalid: Sequence[dict[Any, Any]] = field(default_factory=list)
+    required: Sequence[dict[Any, Any]] = field(default_factory=list)
 
     def isValid(self, obj) -> bool:
         if not hasattr(obj, "text"):
@@ -111,14 +110,14 @@ class ContentValidator(Validator):
         return True
 
 
-def get_validators(validators: Dict[Any, Any]) -> Dict[str, Sequence[Validator]]:
+def get_validators(validators: dict[Any, Any]) -> dict[str, Sequence[Validator]]:
     """Wrapper for the validators that returns a dictionary with the validators already set.
 
     Args:
-        validators (Dict[Any, Any]): Dictionary containing the structure of the validators
+        validators (dict[Any, Any]): Dictionary containing the structure of the validators
 
     Returns:
-        Dict[str, Sequence[Validator]]: Dictionary with the validators separated by their model
+        dict[str, Sequence[Validator]]: Dictionary with the validators separated by their model
     """
     ret: dict = dict()
 
@@ -139,10 +138,10 @@ def get_validators(validators: Dict[Any, Any]) -> Dict[str, Sequence[Validator]]
 class CrawlerProtocol(Protocol):
     market: str
     domain: str
-    validators: Dict[Any, Validator] = field(default_factory=dict)
+    validators: dict[Any, Validator] = field(default_factory=dict)
 
     # Extra options. Modifiable when initialised
-    path: str = None
+    path: str = field()
 
     @abstractmethod
     def crawl(self, session: SessionManager, url: str, retry: bool = True):
@@ -164,23 +163,25 @@ class Crawler(CrawlerProtocol):
         response = session.request(clean)
 
         # Validate the response if necessary
-        if validate:
-            # If there is a response continue, otherwise
-            # try again without validation this time
-            if response:
-                valid = self.validate(response)
-                if not valid:
-                    logger.info(f"URL: {url}\nCLEAN: {clean}")
-                    with open(os.path.join(VOLUME, "response.html"), "wb") as f:
-                        f.write(response.content)
-                    # Re-authenticate if the response is not valid
-                    session.auth(self.market)
-                    return self.crawl(session=session, url=url, validate=False)
-            else:
-                return self.crawl(session=session, url=url, validate=False)
+        if not validate:
+            return
 
-        # Return the response
-        return response
+        # If there is a response continue, otherwise
+        # try again without validation this time
+        if not response:
+            return self.crawl(session=session, url=url, validate=False)
+
+        valid = self.validate(response)
+        if valid:
+            return response
+
+        logger.info(f"URL: {url}\nCLEAN: {clean}")
+        with open(os.path.join("dist", "response.html"), "wb") as f:
+            f.write(response.content)
+            
+        # Re-authenticate if the response is not valid
+        session.auth(self.market)
+        return self.crawl(session=session, url=url, validate=False)
 
     def validate(self, response) -> bool:
         """Validates the response"""

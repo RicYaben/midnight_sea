@@ -1,20 +1,28 @@
-import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+import logging
 
 @dataclass
-class ServiceConfig:
-    service: str = None
+class Host:
+    # Name of the host
+    name: str
+    # Host in where it can be reached
+    address: str = field(default_factory=None)
+    # Listening port
+    port: int = field(default_factory=None)
+    
 
-    host: str = "localhost"
-    port: int = 0
+@dataclass
+class Client(Host):
+    # Whether to load the local version
+    local: bool = False
 
+@dataclass
+class Config:
+    host: Host
     # Log
-    verbose: str = "DEBUG"
-
+    verbose: int = logging.DEBUG
     # Paths
     resources: str = "resources"
-
     # Communication
-    allowedServices: [(str, int)] = []
-
-    
+    clients: [Client] = field(default_factory=list)

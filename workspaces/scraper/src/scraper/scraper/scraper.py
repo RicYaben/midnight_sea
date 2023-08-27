@@ -17,7 +17,7 @@ import re
 from abc import abstractmethod
 from dataclasses import dataclass, field
 import types
-from typing import Any, Dict, Protocol, Sequence
+from typing import Any, Protocol, Sequence
 
 from bs4 import BeautifulSoup
 from scraper.scraper.blueprint import Blueprint, get_blueprint
@@ -26,12 +26,12 @@ from scraper.scraper.blueprint import Blueprint, get_blueprint
 @dataclass
 class ScraperProtocol(Protocol):
     @abstractmethod
-    def scrape(self, structure: Sequence[Dict[Any, Any]]) -> Dict[Any, Any]:
+    def scrape(self, structure: Sequence[dict[Any, Any]]) -> dict[Any, Any]:
         """Logic of the scrapping process"""
         raise NotImplementedError
 
     @abstractmethod
-    def map_properties(self, prop) -> Dict[Any, Any]:
+    def map_properties(self, prop) -> dict[Any, Any]:
         """Map the properties to include regular expressions"""
         raise NotImplementedError
 
@@ -44,7 +44,7 @@ class ScraperProtocol(Protocol):
     def process(
         self,
         content,
-        instructions: Sequence[Dict[Any, Any]],
+        instructions: Sequence[dict[Any, Any]],
         clean_expr: str = None,
     ):
         """Wrapper for processing instructions"""
@@ -83,7 +83,7 @@ class Scraper(ScraperProtocol):
     def process(
         self,
         content,
-        instructions: Sequence[Dict[Any, Any]],
+        instructions: Sequence[dict[Any, Any]],
         clean_expr: str = None,
     ):
         # Continue only if there is content or an instruction
@@ -123,7 +123,7 @@ class Scraper(ScraperProtocol):
 
         return results
 
-    def map_properties(self, prop) -> Dict[Any, Any]:
+    def map_properties(self, prop) -> dict[Any, Any]:
 
         if hasattr(prop, "items"):
             # Iterate through the property items
@@ -184,7 +184,7 @@ class ScraperFactory:
 class SimpleScraper(Scraper):
     """Scraper for 'simple' tagged structures"""
 
-    def scrape(self, structure: Sequence[Dict[Any, Any]]) -> Dict[Any, Any]:
+    def scrape(self, structure: Sequence[dict[Any, Any]]) -> dict[Any, Any]:
         # Initialise a variable to hold the data points
         data: dict = {}
 
@@ -213,7 +213,7 @@ class SimpleScraper(Scraper):
 class GroupedScraper(Scraper):
     """Scraper for content that contains groups of fields"""
 
-    def scrape(self, structure: Sequence[Dict[Any, Any]]) -> Dict[Any, Any]:
+    def scrape(self, structure: Sequence[dict[Any, Any]]) -> dict[Any, Any]:
         data: dict = {}
 
         for group in structure:
@@ -251,7 +251,7 @@ def scrape(
     market: str,
     model: str,
     html: str | bytes,
-) -> Dict[Any, Any]:
+) -> dict[Any, Any]:
     """Wrapper function that returns a dictionary with the content of the page
 
     Args:
@@ -260,7 +260,7 @@ def scrape(
         data (bytes): Page data
 
     Returns:
-        Dict[Any, Any]: Page content
+        dict[Any, Any]: Page content
     """
     # Load the schema of the blueprint
     blueprint: Blueprint = get_blueprint(market=market, model=model)
@@ -274,6 +274,6 @@ def scrape(
     scraper = scraper.from_html(html)
 
     # scrape the content
-    content: Dict[Any, Any] = scraper.scrape(structure=blueprint.structure["struct"])
+    content: dict[Any, Any] = scraper.scrape(structure=blueprint.structure["struct"])
 
     return content

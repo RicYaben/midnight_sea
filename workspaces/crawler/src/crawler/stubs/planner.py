@@ -17,20 +17,17 @@ import pathlib
 import yaml
 
 from lib.logger import logger
-from lib.client.services import ServiceFactory, Service
+from lib.stubs.factory import StubFactory
 
-from crawler.client.interfaces import (
-    ExService,
-    Planner,
-)
-from crawler.protos.planner_pb2_grpc import PlannerStub
+from crawler.stubs.interfaces import Planner
+from lib.protos.planner_pb2_grpc import PlannerStub
 from crawler.strategies.plan import Plan
 
 
-@ServiceFactory.register("planner")
-class PlannerService(ExService, Planner):
+@StubFactory.register("planner")
+class PlannerService(Planner):
 
-    _stub_class = PlannerStub
+    _stub_cls = PlannerStub
 
     def plan(self, market: str) -> Plan:
         response = self.stub.GetPlan(market)
@@ -39,9 +36,8 @@ class PlannerService(ExService, Planner):
         return plan
 
 
-@ServiceFactory.register("local_planner")
-class LocalPlannerService(Service, Planner):
-
+@StubFactory.register("planner", True)
+class LocalPlannerService(Planner):
     _plan_path: pathlib.Path = os.path.join("dist", "plans")
 
     def plan(self, market: str) -> Plan:

@@ -14,17 +14,16 @@
 
 import time
 from queue import Queue
-from typing import Any, Protocol
+from typing import Any
+from dataclasses import dataclass
 
-import grpc
-
+from lib.stubs.interfaces import Stub
 from lib.logger import logger
-from lib.client.services import Service
 
-from crawler.strategies.content import Page
+from crawler.strategies.page import Page
 
-
-class Core(Protocol):
+@dataclass
+class Core(Stub):
     """Protocol for the Core Service"""
 
     class Ticket:
@@ -56,52 +55,27 @@ class Core(Protocol):
         self._locked = False
 
     def cookies(self, market: str) -> dict[Any, Any]:
-        ...
+        raise NotImplementedError
 
     def market(self) -> str | None:
-        ...
+        raise NotImplementedError
 
-
-class Storage(Protocol):
+@dataclass
+class Storage(Stub):
     """Storage Protocol"""
 
-    name: str = "storage"
-
     def store(self, pages: list[Page], market: str, model: str) -> bool:
-        ...
+        raise NotImplementedError
 
     def pending(self, market: str, model: str) -> list[dict[Any, Any]]:
-        ...
+        raise NotImplementedError
 
     def check(self, market: str, model: str, pages: list[str]) -> list[Page]:
-        ...
+        raise NotImplementedError
 
-
-class Planner(Protocol):
+@dataclass
+class Planner(Stub):
     """Planner Protocol"""
 
-    name: str = "planner"
-
     def plan(self, market: str) -> dict[Any, Any]:
-        ...
-
-class ExService(Service):
-    """Interface to connect to a given external service"""
-
-    channel: grpc.Channel = None
-    stub = None
-
-    _stub_class = None
-
-    def __init__(self, host: str, port: int, cert: bytes) -> None:
-        # Make a secure channel if there is a certificate, otherwise create an insecure channel.
-        if cert:
-            credentials = grpc.ssl_channel_credentials(cert)
-            self.channel = grpc.secure_channel(
-                "%s:%s" % (host, port), credentials=credentials
-            )
-        else:
-            self.channel = grpc.insecure_channel("%s:%s" % (host, port))
-            logger.warning(f"Loaded service using insecure channel on {host}:{port}")
-
-        self.stub = self._stub_class(self.channel)
+        raise NotImplementedError

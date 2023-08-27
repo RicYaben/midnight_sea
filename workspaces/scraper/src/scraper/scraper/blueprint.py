@@ -16,7 +16,7 @@ import yaml
 import os
 from dataclasses import dataclass, field
 
-from ms_scraper.globals import BLUEPRINTS, logger
+from lib.logger import logger
 
 
 @dataclass
@@ -49,7 +49,7 @@ def get_blueprint(market: str, model: str) -> Blueprint:
     model = model.lower()
     # Check that the file is there and it is a file
     filename: str = "%s.yaml" % model
-    filepath = os.path.join(BLUEPRINTS, market, filename)
+    filepath = os.path.join("dist", market, filename)
 
     if os.path.isfile(filepath):
 

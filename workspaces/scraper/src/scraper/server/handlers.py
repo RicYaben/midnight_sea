@@ -20,11 +20,11 @@ import sys
 import grpc
 
 # Handlers
-from ms_scraper.protos import scraper_pb2_grpc
-from ms_scraper.server.interfaces import Service, ServiceFactory
+from scraper.protos import scraper_pb2_grpc
+from scraper.server.interfaces import Service, ServiceFactory
 
 # Services to register
-from ms_scraper.server.services import scraper
+from scraper.server.services import scraper
 
 
 def lazy_get_handler(service: str):

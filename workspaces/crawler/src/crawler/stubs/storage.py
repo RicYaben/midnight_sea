@@ -19,25 +19,20 @@ from typing import Any
 from google.protobuf.struct_pb2 import Struct
 
 from lib.logger import logger
-from lib.client.services import ServiceFactory, Service
+from lib.stubs.factory import StubFactory
 
 from crawler.strategies.content import Page
-from crawler.client.interfaces import (
-    ExService,
-    Storage
-)
-
-from crawler.protos.storage_pb2 import (
+from crawler.stubs.interfaces import Storage
+from lib.protos.storage_pb2 import (
     PendingRequest,
     StoreRequest,
     CheckRequest,
 )
-from crawler.protos.storage_pb2_grpc import StorageStub
+from lib.protos.storage_pb2_grpc import StorageStub
 
-
-@ServiceFactory.register("storage")
-class StorageService(ExService, Storage):
-    _stub_class = StorageStub
+@StubFactory.register("storage")
+class StorageService(Storage):
+    _stub_cls = StorageStub
 
     def store(self, pages: list[Page], market: str, model: str) -> bool:
         """Send the content of the pages to the storage service
@@ -97,9 +92,8 @@ class StorageService(ExService, Storage):
 
         return response.pages
 
-
-@ServiceFactory.register("local_storage")
-class LocalStorageService(Service, Storage):
+@StubFactory.register("storage", True)
+class LocalStorageService(Storage):
     _pending: list[Page] = []
 
     def store(self, pages: list[Page], market: str, model: str) -> bool:

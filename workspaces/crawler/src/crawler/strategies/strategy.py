@@ -17,58 +17,37 @@ the crawler strategy"""
 
 import asyncio
 import copy
-import re
 import time
-from abc import abstractmethod
+
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from functools import partial
-from typing import Any, Callable, Dict, Protocol, Sequence
+from typing import Any
+from crawler.strategies.factory import StrategyFactory
+from crawler.strategies.interfaces import Strategy
 
 from lib.logger import logger
 
-from crawler.client.interfaces import Core, Planner, Storage
+from crawler.stubs.interfaces import Core, Planner, Storage
 from crawler.crawlers.crawler import Crawler, get_validators
-from crawler.scrape.scraper import Scraper
 from crawler.session.session import SessionManager, new_session
-from crawler.strategies.content import Page
+from crawler.strategies.page import Page, make_pages
 from crawler.strategies.plan import Plan
 from crawler.strategies.state import State
 from tabulate import tabulate
 
-
-@dataclass
-class StrategyProtocol(Protocol):
-    session: SessionManager
-    storage: Storage
-    crawler: Crawler
-    model: str
-    elements: Sequence[Dict[Any, Any]] = field(default_factory=list)
-
-    @abstractmethod
-    def start(self, pages: Sequence[Page]) -> Sequence[Page]:
-        """Starting point for the strategy, the only method that should be used
-        by any other interface.
-        It accepts a list of `Pages`.
-
-        Args:
-            pages (Sequence[Page]): List of seed pages to crawl
-
-        Returns:
-            Sequence[Page]: Pages stored
-        """
-        raise NotImplementedError
+from lib.scraper.scraper import Scraper
 
 
 @dataclass
-class Strategy(StrategyProtocol):
-    def start(self, pages: Sequence[Page], check=True) -> Sequence[Page]:
+class PageStrategy(Strategy):
+    def start(self, pages: list[Page], check=True) -> list[Page]:
         stored = asyncio.run(self.run(pages=pages, check=check))
         return stored
 
-    async def run(self, pages: Sequence[Page], check=True) -> Sequence[Page]:
-        p_stored: Sequence[Page] = []
+    async def run(self, pages: list[Page], check=True) -> list[Page]:
+        p_stored: list[Page] = []
 
         # Check the pages before crawling them
         if check:
@@ -119,10 +98,10 @@ class Strategy(StrategyProtocol):
             page.store(response)
             return response, page.url
 
-    def new_pages(self, pages: Sequence[Page]) -> Sequence[Page]:
+    def new_pages(self, pages: list[Page]) -> list[Page]:
         """Return only those pages not found in the db"""
-        urls: Sequence[str] = [page.url for page in pages]
-        db: Sequence[str] = self.check(
+        urls: list[str] = [page.url for page in pages]
+        db: list[str] = self.check(
             pages=urls, model=self.model, market=self.crawler.market
         )
 
@@ -147,54 +126,34 @@ class Strategy(StrategyProtocol):
 
         return ret
 
-    def store(self, log=True, **kwargs):
+    def store(self, **kwargs):
         try:
             stored = self.storage.store(**kwargs)
             return stored
         except Exception as e:
-            if log:
-                logger.error("Something went wrong while storing. Retrying...")
+            logger.error(e)
             time.sleep(2)
-            return self.store(log=False, **kwargs)
+            return self.store(**kwargs)
 
-    def check(self, log=True, **kwargs):
+    def check(self, **kwargs):
         try:
             in_db = self.storage.check(**kwargs)
             return in_db
-        except:
-            if log:
-                logger.error("Something went wrong while checking. Retrying...")
+        except Exception as e:
+            logger.error(e)
             time.sleep(2)
-            return self.check(log=False, **kwargs)
-
-
-@dataclass
-class StrategyFactory:
-    strategies = {}
-
-    @classmethod
-    def get_strategy(cls, strategy: str) -> Strategy:
-        return cls.strategies.get(strategy, Strategy)
-
-    @classmethod
-    def register(cls, name: str) -> Callable:
-        def decorator(decorator_cls: Strategy) -> Strategy:
-            cls.strategies[name] = decorator_cls
-
-            return decorator_cls
-
-        return decorator
+            return self.check(**kwargs)
 
 
 @StrategyFactory.register("category")
 @dataclass
-class CategoryStrategy(StrategyProtocol):
+class CategoryStrategy(Strategy):
     # [3/6/2022] TODO: This kind of strategies could be generalised to simply strategies
     # with nested pages and so on.
     # Perhaps, a nice Strategy could recognise this from the plan.
     state: State = None
 
-    def start(self, pages: Sequence[Page]):
+    def start(self, pages: list[Page]):
         # Load the state for the market
         self.state = State(market=self.crawler.market)
         for page in pages:
@@ -285,7 +244,7 @@ class CategoryStrategy(StrategyProtocol):
 
         return listings
 
-    def get_listings(self, content) -> Sequence[str]:
+    def get_listings(self, content) -> list[str]:
         # Load the content in the scraper
         scraper: Scraper = Scraper.from_html(content)
         cp = self.elements.copy()
@@ -297,15 +256,15 @@ class CategoryStrategy(StrategyProtocol):
         nx_element = next(filter(lambda x: x.get("name") == "next_page", cp))
         next_page = self.find_elements(scraper=scraper, element=nx_element)
 
-        return (listings, next_page)
+        return [listings, next_page]
 
-    def crawl_listings(self, urls: Sequence[str], category: str) -> Sequence[Page]:
+    def crawl_listings(self, urls: list[str], category: str) -> list[Page]:
         pages = [Page(url=url, meta=dict(category=category)) for url in urls]
 
         crawler = copy.copy(self.crawler)
         crawler.validators = dict(all=crawler.validators["all"])
 
-        strat: Strategy = Strategy(
+        strat: PageStrategy = PageStrategy(
             crawler=crawler,
             storage=self.storage,
             model="item",
@@ -316,14 +275,14 @@ class CategoryStrategy(StrategyProtocol):
         stored = strat.start(pages=pages)
         return stored
 
-    def find_elements(self, scraper: Scraper, element: Dict[Any, Any]):
+    def find_elements(self, scraper: Scraper, element: dict[Any, Any]):
         """This method finds the listings on the response, and returns
         a list of url's
         """
         instructions = element.get("instructions").copy()
         ret = scraper.process(content=scraper.content, instructions=instructions)
 
-        if not "many" in element and ret:
+        if ("many" not in element) and ret:
             ret = ret.pop(0)
 
         return ret
@@ -331,9 +290,9 @@ class CategoryStrategy(StrategyProtocol):
 
 def get_strategy(
     model: str, plan: Plan, session: SessionManager, storage: Storage
-) -> Strategy:
+) -> PageStrategy:
     # Get the validators
-    plan_validators: Dict[Any, Any] = plan.section(model, "validators")
+    plan_validators: dict[Any, Any] = plan.section(model, "validators")
     validators = get_validators(plan_validators)
 
     # Get the crawling options for the model
@@ -345,12 +304,12 @@ def get_strategy(
         validators=validators, **plan.data.get("meta"), **options
     )
 
-    kwargs: Dict[Any, Any] = dict(
+    kwargs: dict[Any, Any] = dict(
         crawler=crawler, session=session, storage=storage, model=model
     )
 
     # Get the strategy and instantiate it
-    strategy: Strategy = StrategyFactory.get_strategy(model)
+    strategy: PageStrategy = StrategyFactory.get_strategy(model)
 
     # Get the strategy model unique elements
     elements: dict = plan.section(model, "elements", False)
@@ -375,7 +334,7 @@ def pending_loop(market: str, model: str, storage: Storage, **kwargs):
         model (str): Name of the model as is in the database
         storage (Storage): Storage Stub or server
     """
-    pending: Sequence[Page] = storage.pending(market=market, model=model)
+    pending: list[Page] = storage.pending(market=market, model=model)
 
     while pending:
         logger.info(f"Got {len(pending)} pending {model}(s)")
@@ -385,7 +344,7 @@ def pending_loop(market: str, model: str, storage: Storage, **kwargs):
         strat.start(pages=pending, check=False)  # Do not check the pages
 
         # Repeat until there are no more pending
-        pending: Sequence[Page] = storage.pending(market=market, model=model)
+        pending: list[Page] = storage.pending(market=market, model=model)
 
 
 def strat(storage: Storage, core: Core, planner: Planner) -> str:
@@ -399,7 +358,7 @@ def strat(storage: Storage, core: Core, planner: Planner) -> str:
         plan: Plan = planner.plan(market)
 
         # Create a new session instance
-        session: SessionManager = new_session(core.cookies, BUDGET)
+        session: SessionManager = new_session(core.cookies, "simple")
         common: dict = dict(
             plan=plan,
             session=session,
@@ -428,55 +387,3 @@ def strat(storage: Storage, core: Core, planner: Planner) -> str:
 
         # Ask again for a market
         market = core.market()
-
-
-@dataclass
-class PageParser:
-    rex = re.compile(r"\$\{(?P<var>.*?)\}")
-
-    def parse_to_pages(self, page: dict) -> list[Page]:
-        path: str = page.get("path")
-        ret = []
-
-        if "vars" in page:
-            v: dict = page.get("vars")
-
-            for key, val in v.items():
-                fn = getattr(self, f"replace_{key}")
-                res = fn(path, val)
-                ret += res
-        else:
-            ret = [path]
-
-        name = page.get("name")
-        pages = [Page(url=page, meta=dict(category=name)) for page in ret]
-
-        return pages
-
-    def replace_list(self, path, ls) -> list:
-        ret = []
-        for i in ls:
-            sub = re.sub(self.rex, str(i), path)
-            ret.append(sub)
-        return ret
-
-    def replace_range(self, path, ran) -> list:
-        start, stop = ran
-        ret = []
-        for i in range(start, stop + 1):
-            sub = re.sub(self.rex, str(i), path)
-            ret.append(sub)
-        return ret
-
-
-def make_pages(sects) -> Sequence[Page]:
-    # Load the pages
-    ret = []
-    parser = PageParser()
-
-    for sections in sects.values():
-        for page in sections:
-            res: list = parser.parse_to_pages(page)
-            ret += res
-
-    return ret

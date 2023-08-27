@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Any
 
 
 @dataclass
@@ -23,12 +23,12 @@ class Plan:
     the pages.
 
     Attributes:
-        data (Dict[Any, Any]): Object returned from the planner. The plan itself.
+        data (dict[Any, Any]): Object returned from the planner. The plan itself.
     """
 
-    data: Dict[Any, Any] = field(default_factory=dict)
+    data: dict[Any, Any] = field(default_factory=dict)
 
-    def section(self, model: str, name: str, all: bool = True) -> Dict[Any, Any]:
+    def section(self, model: str, name: str, all: bool = True) -> dict[Any, Any]:
         """Returns the list of values found in the given section"""
         models: dict = self.data.get("models")
         search: list = [model]

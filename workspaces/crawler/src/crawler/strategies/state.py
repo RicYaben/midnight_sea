@@ -15,7 +15,7 @@
 import os
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import yaml
 
@@ -32,7 +32,7 @@ class State:
     window_min: int = 2
     markets_folder = os.path.join("dist", "markets")
 
-    _state: Dict[Any, Any] = field(default_factory=dict)
+    _state: dict[Any, Any] = field(default_factory=dict)
     _state_file: str = ""
 
     def get_state(self) -> dict:
@@ -63,13 +63,13 @@ class State:
         with open(self._state_file, "w") as f:
             yaml.dump(state, f)
 
-    def get_status(self, category: str, path: str) -> Dict[Any, Any]:
+    def get_status(self, category: str, path: str) -> dict[Any, Any]:
         """Returns a dictionary containing the current status of some
         page for a given model
         """
         state = self.get_state()
 
-        if not category in state:
+        if category not in state:
             state[category] = []
 
         cat_stats: list = state[category]
@@ -82,7 +82,7 @@ class State:
         self.save()
         return status
 
-    def calculate_window(self, status: Dict[Any, Any]) -> int:
+    def calculate_window(self, status: dict[Any, Any]) -> int:
         """Returns a window integer that can be used  to decide whether some
         category does not contain new items
         """

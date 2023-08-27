@@ -21,4 +21,5 @@ pytimedinput = "^2.0.1"
 lxml = "^4.7.1"
 tabulate = "^0.8.9"
 tldextract = "^3.2.1"
+hydra = "^2.5"
 lib = { path = "../../lib"}

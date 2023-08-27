@@ -17,13 +17,13 @@ This package contains functions and methods for connecting
 and performing operations on a given database.
 """
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Any
 
 from sqlalchemy import create_engine
 from sqlalchemy import orm, exc
 from sqlalchemy.engine import Engine, URL
 
-from ms_storage.globals import DATABASE_CONF, logger, BASE
+from lib.logger import logger
 
 database = None
 
@@ -108,13 +108,13 @@ class Database:
             )
 
     def get_or_create(
-        self, model, defaults: Dict[Any, Any] = {}, **kwargs
+        self, model, defaults: dict[Any, Any] = {}, **kwargs
     ) -> tuple[Any, bool]:
         """Return the instance of the object or create a new one if it did not exists
 
         Args:
             model ([type]): Model of the table in where the item should be found
-            defaults (Dict[Any, Any], optional): Default values for the model fields. Defaults to {}.
+            defaults (dict[Any, Any], optional): Default values for the model fields. Defaults to {}.
 
         Returns:
             Any: Instance of the (new) object
@@ -141,13 +141,13 @@ class Database:
             logger.warning(f"Item not found: \nmodel: {model}\nArgs: {kwargs}")
 
     def create(
-        self, model, defaults: Dict[Any, Any] = {}, **kwargs
+        self, model, defaults: dict[Any, Any] = {}, **kwargs
     ) -> tuple[Any, bool]:
         """Create a new instance in the database
 
         Args:
             model ([type]): Model of the table in where the item should be found
-            defaults (Dict[Any, Any], optional): Default values for the model fields. Defaults to {}.
+            defaults (dict[Any, Any], optional): Default values for the model fields. Defaults to {}.
 
         Raises:
             not_found: The item could not be created nor found in the db
@@ -199,7 +199,7 @@ class Database:
             self.session.delete(instance)
 
 
-def start_database(conf: Dict[Any, Any]) -> Database:
+def start_database(conf: dict[Any, Any]) -> Database:
     global database
 
     logger.info("Loading database connection...")

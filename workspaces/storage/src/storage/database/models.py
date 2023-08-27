@@ -36,8 +36,7 @@ from sqlalchemy.sql.schema import ForeignKey, Table
 
 from sqlalchemy_utils.types.choice import ChoiceType
 
-from ms_storage.database.database import get_database
-from ms_storage.globals import BASE
+from storage.database.database import get_database
 
 Base = BASE
 
@@ -219,7 +218,7 @@ class Vendor(Mixin, Base):
         by the other parameters. Then attempt to calculate the reputation and save the model.
         """
         if not self.reputation:
-            from ms_storage.events import reputation_fn
+            from storage.events import reputation_fn
 
             rep = reputation_fn(
                 negative=self.negative_fb,

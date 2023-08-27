@@ -13,18 +13,15 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Protocol
-
-from ms_crawler.globals import PROXY_HOST
-
+from typing import Callable, Protocol
 
 @dataclass
 class Network(Protocol):
     protocol: str
     port: int
-    host: str = PROXY_HOST
+    host: str
 
-    def get_proxy(self) -> Dict[Any, Any]:
+    def get_proxy(self) -> dict[str, str]:
         """Generic build a proxy for http and https redirections"""
         url: str = "%s://%s:%d" % (self.protocol, self.host, self.port)
         ret: dict = dict(http=url, https=url)

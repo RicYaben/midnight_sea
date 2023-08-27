@@ -16,14 +16,15 @@
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 import requests
 import tldextract
-from ms_crawler.globals import BROWSER_HEADERS, TIMEOUT, logger
-from ms_crawler.session.budgets import Budget, BudgetFactory, Recommendation
-from ms_crawler.session.networks import Network, NetworkFactory
 
+from crawler.session.budgets import Budget, BudgetFactory, Recommendation
+from crawler.session.networks import Network, NetworkFactory
+
+from lib.logger import logger
 
 @dataclass
 class SessionManager:
@@ -38,12 +39,10 @@ class SessionManager:
     budget: Budget
     cookies_fn: Callable
 
-    cookies: Dict[Any, Any] = field(default_factory=dict)
-    headers: Dict[Any, Any] = field(
-        default_factory=lambda: BROWSER_HEADERS,
-    )
+    cookies: dict[Any, Any] = field(default_factory=dict)
+    headers: dict[str, Any] = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"}
 
-    _timeout: int = TIMEOUT
+    _timeout: int = 60
     _session: requests.Session = None
 
     @property
@@ -62,7 +61,7 @@ class SessionManager:
 
         # New session
         self._session = session
-        self._session.headers.update(**BROWSER_HEADERS)
+        self._session.headers.update(**self.headers)
 
         return self._session
 
