@@ -16,12 +16,14 @@ import os
 import pathlib
 import yaml
 
-from lib.logger import logger
+from lib.logger.logger import log
 from lib.stubs.factory import StubFactory
 
 from crawler.stubs.interfaces import Planner
 from lib.protos.planner_pb2_grpc import PlannerStub
 from crawler.strategies.plan import Plan
+
+import crawler
 
 
 @StubFactory.register("planner")
@@ -29,7 +31,7 @@ class PlannerService(Planner):
 
     _stub_cls = PlannerStub
 
-    def plan(self, market: str) -> Plan:
+    def get_plan(self, market: str) -> Plan:
         response = self.stub.GetPlan(market)
         plan: Plan = Plan(data=response.message.plan)
 
@@ -38,16 +40,19 @@ class PlannerService(Planner):
 
 @StubFactory.register("planner", True)
 class LocalPlannerService(Planner):
-    _plan_path: pathlib.Path = os.path.join("dist", "plans")
+    _plan_path: pathlib.Path = os.path.join(os.path.dirname(crawler.__file__), "../../dist", "plans")
 
-    def plan(self, market: str) -> Plan:
+    def get_plan(self, market: str) -> Plan | None:
         plan_filepath: str = "%s.yaml" % market
 
         p = os.path.join(self._plan_path, plan_filepath)
-        if os.path.exists(p):
-            with open(p, "r") as f:
-                content = yaml.load(f, yaml.loader.SafeLoader)
-                plan: Plan = Plan(data=content)
-                return plan
-        else:
-            logger.error("Plan for %s not found" % market)
+        if not os.path.exists(p):
+            log.error("Plan for %s not found" % market)
+            return
+
+        with open(p, "r") as f:
+            content = yaml.load(f, yaml.loader.SafeLoader)
+            plan: Plan = Plan(data=content)
+            return plan
+
+        

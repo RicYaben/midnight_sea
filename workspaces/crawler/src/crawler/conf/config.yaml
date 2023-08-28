@@ -1,0 +1,16 @@
+defaults:
+  - base_config
+  - host: crawler
+  - clients:
+    - storage
+    - core
+    - planner
+  - _self_ 
+
+resources: dist
+
+# Hydra specific config
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: .

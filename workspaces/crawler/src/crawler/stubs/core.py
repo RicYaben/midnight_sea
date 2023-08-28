@@ -19,7 +19,7 @@ from typing import Any
 
 from google.protobuf import message, json_format
 
-from lib.logger import logger
+from lib.logger.logger import log
 from lib.stubs.factory import StubFactory
 
 from crawler.stubs.interfaces import Core
@@ -36,14 +36,7 @@ class CoreService(Core):
         super().__init__(host, port, cert)
 
     def cookies(self, market: str) -> dict[Any, Any]:
-        if self.locked:
-            ticket = self.Ticket()
-            self._q.put(ticket)
-            return self.wait(ticket)
-
-        # Lock the service
-        self.lock()
-        logger.info("Requesting new cookies, this might need attention!")
+        log.info("Requesting new cookies, this might need attention!")
 
         # Request for cookies to the stub
         request = CookiesRequest(market=market)
@@ -51,15 +44,13 @@ class CoreService(Core):
         cookies: message = response.cookies
         ret = json_format.MessageToDict(cookies)
 
-        # Unlock the service
-        self.unlock(ret)
-        logger.info("Resumming...")
+        log.info("Resumming...")
 
         return ret
 
     def market(self) -> str | None:
         """Request the market to the stub"""
-        logger.info("Requesting Market...")
+        log.info("Requesting Market...")
 
         # Get the market once
         req = MarketRequest(stub=0)
@@ -99,57 +90,34 @@ class LocalCoreService(Core):
             data = json.load(f)
             return data
 
-    def _continue(self) -> bool:
-        skip = "skip"
-        logger.warning(
-            "When you are ready, introduce any value. If you rather skip this link, introduce `skip`"
-        )
-
-        # prompt for input
-        prompt: str = "[Any|%s]: " % skip
-        # [4/2/2022] NOTE: we are removing the timeout to lock the flow. Sometimes you might
-        # need a lot of time in between.
-        # cont, _ = timedInput(prompt, timeout=self.TIMEOUT)
-        cont = input(prompt) or None
-
-        if cont == skip:
-            return False
-
-        # If it times out, returns True
-        return True
-
     def cookies(self, market: str) -> dict[Any, Any]:
         """Builds cookies from a given file"""
+        ticket = self.Ticket(value=None)
+        self.add_ticket(ticket)
 
-        # If the service is locked, grant a ticket
-        if self.locked:
-            ticket = self.Ticket()
-            self._q.put(ticket)
-            return self.wait(ticket)
+        self.lock.acquire()
+        if ticket.value is not None:
+            return ticket.value
 
-        # Lock the service
-        self.lock()
+        log.warning(
+            "Market %s needs authentication" % (market),
+            "When you are ready, introduce any value. If you rather skip this link, introduce `skip`"
+        )
+        _ = input()
 
-        msg: str = "Market %s needs authentication" % (market)
-        logger.warning(msg)
+        # Add the cookies to each ticket
+        cookies = self._cookies_content(market)
+        while not self._q.empty():
+            ticket = self._q.get()
+            ticket.value = cookies
 
-        # NOTE: We prompt so we can stop the application for a few moments
-        # and place the cookies
-        cont = self._continue()
-        cookies = {}
-
-        if cont:
-            # Get the cookies
-            self.unlock(cookies)
-            cookies = self._cookies_content(market)
-
-            logger.info("Resumming...")
-            return cookies
+        self.lock.release()
+        return cookies
 
     def market(self) -> str | None:
         msg: str = "Introduce the name of the market to crawl"
         prompt = "> "
-        logger.info(msg)
+        log.info(msg)
         market = input(prompt) or None
 
         return market

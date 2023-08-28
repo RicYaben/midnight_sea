@@ -2,14 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.231.6/containers/python-3
 {
   "name": "Python 3",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "..",
-    "args": {
-      "VARIANT": "3.10-bullseye",
-      "POETRY_VERSION": "1.6.1"
-    }
-  },
+  "image": "mcr.microsoft.com/vscode/devcontainers/python:0-3.10-bullseye",
 
   "containerEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",

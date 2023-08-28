@@ -26,11 +26,11 @@ RESET_SEQ = "\033[0m"
 COLOR_SEQ = "\033[1;%dm"
 BOLD_SEQ = "\033[1m"
 
-logger: logging.Logger = logging.getLogger()
+log: logging.Logger = logging.getLogger()
 
-def setLogger(lg: logging.Logger) -> None:
-    global logger
-    logger = lg
+def set_logger(lg: logging.Logger) -> None:
+    global log
+    log = lg
 
 def formatter_message(message, use_color=True):
     if use_color:

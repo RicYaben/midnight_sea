@@ -23,23 +23,25 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
 from functools import partial
-from typing import Any
-from crawler.strategies.factory import StrategyFactory
-from crawler.strategies.interfaces import Strategy
+from typing import Any, Optional
+from tabulate import tabulate
 
-from lib.logger import logger
+
+from lib.logger.logger import log
+from lib.scraper.scraper import Scraper
 
 from crawler.stubs.interfaces import Core, Planner, Storage
 from crawler.crawlers.crawler import Crawler, get_validators
 from crawler.session.session import SessionManager, new_session
 from crawler.strategies.page import Page, make_pages
 from crawler.strategies.plan import Plan
+from crawler.strategies.factory import StrategyFactory
+from crawler.strategies.interfaces import Strategy
 from crawler.strategies.state import State
-from tabulate import tabulate
-
-from lib.scraper.scraper import Scraper
 
 
+@StrategyFactory.register("product")
+@StrategyFactory.register("vendor")
 @dataclass
 class PageStrategy(Strategy):
     def start(self, pages: list[Page], check=True) -> list[Page]:
@@ -119,10 +121,12 @@ class PageStrategy(Strategy):
         # Print the new items
         cols = 4
         listings = [listings[i : i + cols] for i in range(0, len(listings), cols)]
-        print(f"New items: {len(ret)}\nFound items:{len(pages)}")
 
+        msg = f"New items: {len(ret)}\nFound items:{len(pages)}"
         if listings:
-            print(tabulate(listings), "\n")
+            msg += "\n" + tabulate(listings) + "\n"
+
+        log.info(msg)
 
         return ret
 
@@ -131,7 +135,7 @@ class PageStrategy(Strategy):
             stored = self.storage.store(**kwargs)
             return stored
         except Exception as e:
-            logger.error(e)
+            log.error(e)
             time.sleep(2)
             return self.store(**kwargs)
 
@@ -140,7 +144,7 @@ class PageStrategy(Strategy):
             in_db = self.storage.check(**kwargs)
             return in_db
         except Exception as e:
-            logger.error(e)
+            log.error(e)
             time.sleep(2)
             return self.check(**kwargs)
 
@@ -151,7 +155,7 @@ class CategoryStrategy(Strategy):
     # [3/6/2022] TODO: This kind of strategies could be generalised to simply strategies
     # with nested pages and so on.
     # Perhaps, a nice Strategy could recognise this from the plan.
-    state: State = None
+    state: Optional[State] = None
 
     def start(self, pages: list[Page]):
         # Load the state for the market
@@ -176,7 +180,7 @@ class CategoryStrategy(Strategy):
         # without caring about whether there is a new listing in it.
         window = self.state.calculate_window(status)
 
-        print(
+        log.info(
             "Resumming category crawl...\n",
             tabulate(
                 [
@@ -213,7 +217,7 @@ class CategoryStrategy(Strategy):
             # Check if this is the first time we are crawling this category
             # It also works for looping back to the category first page.
             url = status.get("url", None) or status.get("path")
-            logger.info("Next category page...")
+            log.info("Next category page...")
             print(f"- {url}")
 
             response = self.crawler.crawl(session=self.session, url=url)
@@ -290,26 +294,28 @@ class CategoryStrategy(Strategy):
 
 def get_strategy(
     model: str, plan: Plan, session: SessionManager, storage: Storage
-) -> PageStrategy:
+) -> Strategy | None:
+    
+    strategy: Strategy = StrategyFactory.get_strategy(model)
+    if not strategy:
+        return
+
     # Get the validators
     plan_validators: dict[Any, Any] = plan.section(model, "validators")
     validators = get_validators(plan_validators)
 
     # Get the crawling options for the model
     options: dict = plan.section(model, "options", False)
-    options = options.get(model) or {}
+    model_options = options.get(model) or {}
 
     # Make the crawler
     crawler: Crawler = Crawler(
-        validators=validators, **plan.data.get("meta"), **options
+        validators=validators, **plan.data.get("meta"), **model_options
     )
 
     kwargs: dict[Any, Any] = dict(
         crawler=crawler, session=session, storage=storage, model=model
     )
-
-    # Get the strategy and instantiate it
-    strategy: PageStrategy = StrategyFactory.get_strategy(model)
 
     # Get the strategy model unique elements
     elements: dict = plan.section(model, "elements", False)
@@ -337,7 +343,7 @@ def pending_loop(market: str, model: str, storage: Storage, **kwargs):
     pending: list[Page] = storage.pending(market=market, model=model)
 
     while pending:
-        logger.info(f"Got {len(pending)} pending {model}(s)")
+        log.info(f"Got {len(pending)} pending {model}(s)")
 
         # Get the strategy
         strat = get_strategy(**kwargs, storage=storage, model=model)
@@ -350,31 +356,31 @@ def pending_loop(market: str, model: str, storage: Storage, **kwargs):
 def strat(storage: Storage, core: Core, planner: Planner) -> str:
     """Build the strategies and start the crawl"""
 
-    # Request the market
-    market: str = core.market()
+    while True:
+        # Ask again for a market
+        market = core.market()
+        if not market:
+            break
 
-    while market:
         # Build the plan
-        plan: Plan = planner.plan(market)
+        plan: Plan = planner.get_plan(market)
+        if not plan:
+            continue
 
         # Create a new session instance
-        session: SessionManager = new_session(core.cookies, "simple")
+        session: SessionManager = new_session(cookies_fn=core.cookies)
+        session.auth(market)
+
+        # Stablish some common ground
         common: dict = dict(
             plan=plan,
             session=session,
             storage=storage,
         )
-
-        # Authenticate first
-        session.auth(market)
-
-        # Pending
-        models = [
-            "vendor",
-            "item",
-        ]
         pending = partial(pending_loop, market=market, **common)
 
+        # Pending
+        models = ["vendor","product"]
         for model in models:
             pending(model=model)
 
@@ -385,5 +391,4 @@ def strat(storage: Storage, core: Core, planner: Planner) -> str:
         categories_strat = get_strategy(**common, model="category")
         categories_strat.start(pages=pages)
 
-        # Ask again for a market
-        market = core.market()
+    # TODO: Add a summary here

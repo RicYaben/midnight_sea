@@ -14,13 +14,14 @@
 
 """This Package contains a Crawler handler that will decide how to perform the crawling
 """
-from abc import abstractmethod
-from dataclasses import dataclass, field
 import os
 import urllib.parse
+
+from abc import abstractmethod
+from dataclasses import dataclass, field
 from typing import Any, Callable, Protocol, Sequence
 
-from lib.logger import logger
+from lib.logger.logger import log
 from lib.scraper.scraper import Scraper
 
 from crawler.session.session import SessionManager
@@ -96,7 +97,7 @@ class ContentValidator(Validator):
             instructions: list = element.get("instructions").copy()
             found = scraper.process(scraper.content, instructions=instructions)
             if found:
-                logger.error(f"Found invalid element: {element.get('name')}")
+                log.error(f"Found invalid element: {element.get('name')}")
                 return False
 
         for element in self.required.copy():
@@ -104,7 +105,7 @@ class ContentValidator(Validator):
             found = scraper.process(scraper.content, instructions=instructions)
 
             if not found:
-                logger.error(f"Failed to find required element: {element.get('name')}")
+                log.error(f"Failed to find required element: {element.get('name')}")
                 return False
 
         return True
@@ -141,7 +142,7 @@ class CrawlerProtocol(Protocol):
     validators: dict[Any, Validator] = field(default_factory=dict)
 
     # Extra options. Modifiable when initialised
-    path: str = field()
+    path: str = field(default_factory="")
 
     @abstractmethod
     def crawl(self, session: SessionManager, url: str, retry: bool = True):
@@ -175,7 +176,7 @@ class Crawler(CrawlerProtocol):
         if valid:
             return response
 
-        logger.info(f"URL: {url}\nCLEAN: {clean}")
+        log.info(f"URL: {url}\nCLEAN: {clean}")
         with open(os.path.join("dist", "response.html"), "wb") as f:
             f.write(response.content)
             

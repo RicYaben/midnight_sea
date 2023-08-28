@@ -1,0 +1,19 @@
+[2023-08-28 13:51:09,088][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 13:57:59,744][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 13:58:18,674][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 13:58:20,398][root][ERROR] - Plan for asap not found
+[2023-08-28 13:58:20,399][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 13:59:37,012][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:00:38,413][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:01:03,467][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:01:17,165][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:03:44,523][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:03:45,644][root][INFO] - ['conf', 'crawlers', 'flags.py', 'main.py', 'session', 'strategies', 'stubs', '__init__.py', '__main__.py', '__pycache__']
+[2023-08-28 14:03:45,652][root][ERROR] - Plan for asap not found
+[2023-08-28 14:03:45,652][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:04:37,293][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:05:22,942][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 14:05:26,470][root][INFO] - ['alphabay.yaml', 'archetyp.yaml', 'asap.yaml', 'cypher.yaml', 'darkfox.yaml', 'kingdom.yaml', 'README.md', 'template.yaml', 'tor2door.yaml', 'versus.yaml', 'vice.yaml']
+[2023-08-28 14:05:26,507][root][INFO] - Attempting authentication...
+[2023-08-28 14:05:26,508][root][WARNING] - Market asap needs authentication
+[2023-08-28 14:05:26,509][root][WARNING] - When you are ready, introduce any value. If you rather skip this link, introduce `skip`

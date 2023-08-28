@@ -10,7 +10,7 @@ init: .clean-venv .venv
 	pipx run poetry install --sync
 
 .venv-%: .venv
-	poetry install --sync --only $*
+	pipx run poetry install --sync --only $*
 
 # Create a container with a TOR browser
 browser:

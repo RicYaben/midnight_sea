@@ -1,15 +1,16 @@
 from dataclasses import dataclass, field
+from omegaconf import MISSING
 
 import logging
 
 @dataclass
 class Host:
     # Name of the host
-    name: str
+    name: str = MISSING
     # Host in where it can be reached
-    address: str = field(default_factory=None)
+    address: str = "localhost"
     # Listening port
-    port: int = field(default_factory=None)
+    port: int = 80
     
 
 @dataclass
@@ -19,10 +20,10 @@ class Client(Host):
 
 @dataclass
 class Config:
-    host: Host
+    host: Host = MISSING
     # Log
     verbose: int = logging.DEBUG
     # Paths
     resources: str = "resources"
     # Communication
-    clients: [Client] = field(default_factory=list)
+    clients: dict[str, Client] = field(default_factory=dict)

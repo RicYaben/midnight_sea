@@ -13,14 +13,13 @@
 # limitations under the License.
 
 import csv
-import math
 import os
 import random
 from abc import abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from statistics import median_high, median_low, stdev
-from typing import Any, Callable, Protocol
+from statistics import median_high
+from typing import Callable, Protocol
 from uuid import uuid4
 
 @dataclass

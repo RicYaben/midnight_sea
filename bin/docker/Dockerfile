@@ -11,64 +11,46 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+ARG PROJECT
 
-FROM python:slim-buster
+FROM python:slim-buster AS base
+
+FROM base AS builder
 LABEL maintainer="rmyl@dtu.dk"
 
-ARG SERVICE
-ARG PROJECT=ms
-ARG PORT=0
-ARG VERBOSE=INFO
-
 # Environment variables for the container
-ENV SERVICE=${SERVICE} \
-    PORT=${PORT} \
-    PROJECT=${PROJECT} \
-    VERBOSE=${VERBOSE} \
-    # python
-    PYTHONFAULTHANDLER=1 \
+ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
-    # pip
+    # Pip
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100
 
 # Install dependencies in this image
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install --no-install-recommends -y \
     build-essential \
     libpq-dev
 
-RUN pip install --upgrade pip
-
-# Installing `poetry` package manager:
-RUN pip install poetry && poetry --version
-
-RUN mkdir /usr/src/${PROJECT}_${SERVICE} /usr/src/local\
+RUN mkdir /usr/src/${PROJECT} /usr/src/local \
     # Create the system account and give permissions
-    && groupadd -r ${SERVICE} \ 
+    && groupadd -r ${PROJECT} \ 
     # add the user to the folder, and add a name for the system group and the group
-    && useradd -d /usr/src -r -g ${SERVICE} ${SERVICE} \
+    && useradd -d /usr/src -r -g ${PROJECT} ${PROJECT} \
     # add the rights to the folder and its sub-folders
-    && chown ${SERVICE}:${SERVICE} -R /usr/src
+    && chown ${PROJECT}:${PROJECT} -R /usr/src
 
-WORKDIR /usr/src/code
+WORKDIR /usr/src/${PROJECT}
 
-# Copy the files for poetry
-COPY --chown=${SERVICE}:${SERVICE} pyproject.${SERVICE}.toml /pyproject.toml
-COPY --chown=${SERVICE}:${SERVICE} poetry.${SERVICE}.lock /poetry.lock
+# Copy the necessary files for the project
+COPY --chown=${PROJECT}:${PROJECT} pyproject.toml ./
+COPY --chown=${PROJECT}:${PROJECT} lib/ lib/
+COPY --chown=${PROJECT}:${PROJECT} workspaces/${PROJECT}/ workspaces/${PROJECT}/
 
-RUN poetry config virtualenvs.create false \
-    && poetry add platformdirs \
-    && poetry install --no-dev --no-interaction --no-ansi \
-    && poetry update
+# Configure poetry and install the dependencies
+RUN python -m install workspaces/${PROJECT}
 
-WORKDIR /usr/src/${PROJECT}_${SERVICE}
-
-COPY --chown=${SERVICE}:${SERVICE} ${PROJECT}_${SERVICE}/ .
-
-# Change the user to a non-root user:
-USER ${SERVICE}
-WORKDIR /usr/src
-EXPOSE ${PORT}
+USER ${PROJECT}
+CMD ["python", "-m", "${PROJECT}"]

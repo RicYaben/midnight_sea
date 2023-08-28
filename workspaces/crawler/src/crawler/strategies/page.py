@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 
 import requests
 
-from lib.logger import logger
+from lib.logger.logger import log
 
 
 @dataclass(order=True, unsafe_hash=True)
@@ -55,7 +55,7 @@ class Page:
             if data:
                 return bytes(data)
 
-        logger.warning("Attempted to read from an empty Page file")
+        log.warning("Attempted to read from an empty Page file")
 
     @property
     def pk(self) -> str:
@@ -74,7 +74,7 @@ class Page:
         if hasattr(response, "status_code"):
             self.status_code = response.status_code
 
-        logger.debug("Content written in Temporary file")
+        log.debug("Content written in Temporary file")
 
         return self._file
 

@@ -18,10 +18,10 @@ import json
 from typing import Any
 from google.protobuf.struct_pb2 import Struct
 
-from lib.logger import logger
+from lib.logger.logger import log
 from lib.stubs.factory import StubFactory
 
-from crawler.strategies.content import Page
+from crawler.strategies.page import Page
 from crawler.stubs.interfaces import Storage
 from lib.protos.storage_pb2 import (
     PendingRequest,
@@ -68,7 +68,7 @@ class StorageService(Storage):
         Returns:
             dict: List of Pages
         """
-        logger.info(f"Requesting pending {model}(s)...")
+        log.info(f"Requesting pending {model}(s)...")
         request = PendingRequest(market=market, model=model)
         response = self.stub.Pending(request)
 
@@ -114,7 +114,7 @@ class LocalStorageService(Storage):
             ]  # NOTE: The page already contains a "model" field!
             local = os.path.join("dist", "markets", market, model, *fpath)
 
-            logger.debug("Storing item %s in %s" % (page.pk, local))
+            log.debug("Storing item %s in %s" % (page.pk, local))
 
             # Create the folder if it does not exits
             if not os.path.exists(local):
@@ -129,7 +129,7 @@ class LocalStorageService(Storage):
                 page.close()
 
             else:
-                logger.debug(f"Page {page.id} was empty!")
+                log.debug(f"Page {page.id} was empty!")
 
             # Remove the page from the pending
             self._remove_pending(page.pk)

@@ -24,7 +24,7 @@ import tldextract
 from crawler.session.budgets import Budget, BudgetFactory, Recommendation
 from crawler.session.networks import Network, NetworkFactory
 
-from lib.logger import logger
+from lib.logger.logger import log
 
 @dataclass
 class SessionManager:
@@ -40,7 +40,7 @@ class SessionManager:
     cookies_fn: Callable
 
     cookies: dict[Any, Any] = field(default_factory=dict)
-    headers: dict[str, Any] = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"}
+    headers: dict[str, Any] = field(default_factory=lambda: {"user-agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"})
 
     _timeout: int = 60
     _session: requests.Session = None
@@ -57,7 +57,7 @@ class SessionManager:
 
     @session.setter
     def session(self, session):
-        logger.info("Creating new session...")
+        log.info("Creating new session...")
 
         # New session
         self._session = session
@@ -88,14 +88,14 @@ class SessionManager:
 
         try:
             proxies = self.get_proxy(url)
-            logger.debug(f"Requesting page: {url}")
+            log.debug(f"Requesting page: {url}")
             response = self.session.get(
                 url, timeout=self._timeout, cookies=self.cookies, proxies=proxies
             )
 
         except requests.exceptions.RequestException as e:
             response = e.response
-            logger.error(e)
+            log.error(e)
 
         if response:
             # Store a health record in the budget
@@ -120,7 +120,6 @@ class SessionManager:
         Returns:
             bool: Whether the session has been authenticated
         """
-        logger.info("Attempting authentication...")
         gen_cookies = self.cookies_fn(market)
         cookies = gen_cookies
 
@@ -134,4 +133,5 @@ class SessionManager:
 
 def new_session(cookies_fn: Callable, budget: str = "simple") -> SessionManager:
     bd: Budget = BudgetFactory.get_budget(budget)
-    return SessionManager(cookies_fn=cookies_fn, budget=bd())
+    budget_instance: Budget= bd()
+    return SessionManager(cookies_fn=cookies_fn, budget=budget_instance)

@@ -18,9 +18,11 @@ from typing import Any
 from dataclasses import dataclass
 
 from lib.stubs.interfaces import Stub
-from lib.logger import logger
+from lib.logger.logger import log
 
 from crawler.strategies.page import Page
+
+import threading
 
 @dataclass
 class Core(Stub):
@@ -30,29 +32,21 @@ class Core(Stub):
         value: Any = None
 
     name: str = "core"
+    lock = threading.Lock
+
     _q: Queue = Queue()
-    _locked: bool = False
-
-    def wait(self, ticket: Ticket):
-        logger.debug("Waiting to unlock...")
-        while not ticket.value:
-            time.sleep(2)
-
-        return ticket.value
 
     @property
     def locked(self):
         return self._locked
 
-    def lock(self):
-        self._locked = True
+    def add_ticket(self, ticket: Ticket):
+        self._q.put(ticket)
 
     def unlock(self, value: Any):
         while not self._q.empty():
             ticket = self._q.get()
             ticket.value = value
-
-        self._locked = False
 
     def cookies(self, market: str) -> dict[Any, Any]:
         raise NotImplementedError
@@ -77,5 +71,5 @@ class Storage(Stub):
 class Planner(Stub):
     """Planner Protocol"""
 
-    def plan(self, market: str) -> dict[Any, Any]:
+    def get_plan(self, market: str) -> dict[Any, Any]:
         raise NotImplementedError

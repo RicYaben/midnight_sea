@@ -30,7 +30,7 @@ class StubFactory:
         return decorator
     
     @classmethod
-    def create_stub(cls, client: Client) -> Stub:
+    def create_stub(cls, client: Client) -> Stub | None:
         stub: Stub = cls.get_stub(client.name, client.local)
         if not stub:
             return None
