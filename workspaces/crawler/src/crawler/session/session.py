@@ -15,11 +15,11 @@
 """This package contains the Session Handlers to connect to any service"""
 
 import time
-from dataclasses import dataclass, field
-from typing import Any, Callable
-
 import requests
 import tldextract
+
+from dataclasses import dataclass, field
+from typing import Any, Callable
 
 from crawler.session.budgets import Budget, BudgetFactory, Recommendation
 from crawler.session.networks import Network, NetworkFactory

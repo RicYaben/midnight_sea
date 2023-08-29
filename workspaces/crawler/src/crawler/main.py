@@ -15,7 +15,7 @@
 """
 Main entrypoint for the application
 """
-from lib.conf.config import Config
+from lib.config.config import Config
 from crawler.flags import load_flags
 
 import hydra

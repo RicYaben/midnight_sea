@@ -17,144 +17,16 @@
 import os
 import urllib.parse
 
-from abc import abstractmethod
-from dataclasses import dataclass, field
-from typing import Any, Callable, Protocol, Sequence
 
-from lib.logger.logger import log
-from lib.scraper.scraper import Scraper
+from dataclasses import dataclass
 
+from crawler.crawlers.interfaces import CrawlerProtocol
 from crawler.session.session import SessionManager
-
-
-@dataclass
-class Validator(Protocol):
-    """Validator class for the crawler responses
-
-    The protocol suggests a single method `isValid` which takes a
-    generic object and returns a boolean representation of the validity.
-
-    The validator contains an attribute `invalid` to check
-    against that must be filled when instantiated.
-
-    The validator may contain instances of `required` values.
-    """
-
-    invalid: Any
-    required: Any = None
-
-    @abstractmethod
-    def isValid(self, obj: Any) -> bool:
-        raise NotImplementedError
-
-
-@dataclass
-class ValidatorFactory:
-    validators = {}
-
-    @classmethod
-    def get_validator(cls, validator: str) -> Validator:
-        return cls.validators.get(validator)
-
-    @classmethod
-    def register(cls, name: str) -> Callable:
-        def decorator(decorator_cls: Validator) -> Validator:
-            cls.validators[name] = decorator_cls
-            return decorator_cls
-
-        return decorator
-
-
-@ValidatorFactory.register("status")
-@dataclass
-class StatusCodeValidator(Validator):
-    invalid: int = 400
-
-    def isValid(self, obj) -> bool:
-        if not hasattr(obj, "status_code"):
-            return False
-
-        status_code = obj.status_code
-        if not (status_code and status_code < self.invalid):
-            return False
-        return True
-
-
-@ValidatorFactory.register("content")
-@dataclass
-class ContentValidator(Validator):
-    invalid: Sequence[dict[Any, Any]] = field(default_factory=list)
-    required: Sequence[dict[Any, Any]] = field(default_factory=list)
-
-    def isValid(self, obj) -> bool:
-        if not hasattr(obj, "text"):
-            return False
-
-        content = obj.content
-        scraper = Scraper.from_html(content)
-
-        for element in self.invalid.copy():
-            instructions: list = element.get("instructions").copy()
-            found = scraper.process(scraper.content, instructions=instructions)
-            if found:
-                log.error(f"Found invalid element: {element.get('name')}")
-                return False
-
-        for element in self.required.copy():
-            instructions: list = element.get("instructions").copy()
-            found = scraper.process(scraper.content, instructions=instructions)
-
-            if not found:
-                log.error(f"Failed to find required element: {element.get('name')}")
-                return False
-
-        return True
-
-
-def get_validators(validators: dict[Any, Any]) -> dict[str, Sequence[Validator]]:
-    """Wrapper for the validators that returns a dictionary with the validators already set.
-
-    Args:
-        validators (dict[Any, Any]): Dictionary containing the structure of the validators
-
-    Returns:
-        dict[str, Sequence[Validator]]: Dictionary with the validators separated by their model
-    """
-    ret: dict = dict()
-
-    for section_validators in validators:
-        for key, val in validators[section_validators].items():
-            validator = ValidatorFactory.get_validator(key)
-            validator = validator(**val)
-
-            if section_validators not in ret:
-                ret[section_validators] = []
-
-            ret[section_validators].append(validator)
-
-    return ret
-
-
-@dataclass
-class CrawlerProtocol(Protocol):
-    market: str
-    domain: str
-    validators: dict[Any, Validator] = field(default_factory=dict)
-
-    # Extra options. Modifiable when initialised
-    path: str = field(default_factory="")
-
-    @abstractmethod
-    def crawl(self, session: SessionManager, url: str, retry: bool = True):
-        raise NotImplementedError
-
-    @abstractmethod
-    def validate(self, response) -> bool:
-        raise NotImplementedError
-
 
 @dataclass
 class Crawler(CrawlerProtocol):
+    volume: str = "local"
+
     def crawl(self, session: SessionManager, url: str, validate: bool = True):
         """Crawls the content of some page and returns the response"""
         # Clean the url
@@ -176,7 +48,7 @@ class Crawler(CrawlerProtocol):
         if valid:
             return response
 
-        with open(os.path.join("dist", "response.html"), "wb") as f:
+        with open(os.path.join(self.volume, "response.html"), "wb") as f:
             f.write(response.content)
             
         # Re-authenticate if the response is not valid
@@ -207,3 +79,5 @@ class Crawler(CrawlerProtocol):
             res = urllib.parse.urljoin(res, path)
 
         return res
+
+

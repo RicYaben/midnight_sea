@@ -35,11 +35,7 @@ from sqlalchemy.types import CHAR
 from sqlalchemy.sql.schema import ForeignKey, Table
 
 from sqlalchemy_utils.types.choice import ChoiceType
-
-from storage.database.database import get_database
-
-Base = None
-
+from storage.database.database import get_database, Base
 
 class CRUD:
     """Simple CRUD operations for the models. This can be used to update or delete instances on premise.

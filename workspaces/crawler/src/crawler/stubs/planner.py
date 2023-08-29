@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from dataclasses import dataclass
 import os
 import pathlib
+from lib.stubs.interfaces import LocalStubCls
 import yaml
 
 from lib.logger.logger import log
@@ -27,8 +29,8 @@ import crawler
 
 
 @StubFactory.register("planner")
+@dataclass
 class PlannerService(Planner):
-
     _stub_cls = PlannerStub
 
     def get_plan(self, market: str) -> Plan:
@@ -39,7 +41,9 @@ class PlannerService(Planner):
 
 
 @StubFactory.register("planner", True)
+@dataclass
 class LocalPlannerService(Planner):
+    _stub_cls = LocalStubCls
     _plan_path: pathlib.Path = os.path.join(os.path.dirname(crawler.__file__), "../../dist", "plans")
 
     def get_plan(self, market: str) -> Plan | None:

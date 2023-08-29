@@ -1,11 +1,8 @@
 defaults:
   - base_config
   - host: storage
-  - clients:
-    - scraper
+  - db: postgres
   - _self_ 
-
-resources: dist
 
 hydra:
   searchpath:

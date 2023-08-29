@@ -23,7 +23,7 @@ import argparse
 import sys
 from dataclasses import dataclass
 from typing import Callable, Protocol
-from lib.conf.config import Client
+from lib.config.config import Client
 from lib.stubs.factory import StubFactory
 
 from storage.events import (

@@ -35,8 +35,8 @@ class Volume:
         _ZIP_MAX_FILES: maximum amount of files included in the zip file
     """
 
-    _pending: str = os.path.join("dist", "pending")
-    _parsed: str = os.path.join("dist", "parsed")
+    _pending: str = os.path.join("local", "pending")
+    _parsed: str = os.path.join("local", "parsed")
     _ZIP_MAX_FILES: int = 1000
     _ZIP: str = "*.zip"
 

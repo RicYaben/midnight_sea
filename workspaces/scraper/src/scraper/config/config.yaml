@@ -1,13 +1,7 @@
 defaults:
   - base_config
-  - host: crawler
-  - clients:
-    - storage
-    - core
-    - planner
+  - host: scraper
   - _self_ 
-
-resources: dist
 
 hydra:
   searchpath:

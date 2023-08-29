@@ -22,33 +22,38 @@ from typing import Any
 from sqlalchemy import create_engine
 from sqlalchemy import orm, exc
 from sqlalchemy.engine import Engine, URL
+from sqlalchemy.ext.declarative import declarative_base
 
 from lib.logger.logger import log
+from storage.database import interfaces
 
-database = None
+_db = None
+
+Base = declarative_base()
 
 
 @dataclass
 class Database:
-    """
-    This class keeps a record of the database session.
-
-    Attributes:
-        _session:    Connection with a database
-    """
+    """This class keeps a record of the database session."""
 
     session: orm.Session = field(default_factory=orm.Session)
-    engine = None
+    engine: Engine = None
+
+    def get_url(self, db: interfaces.Database) -> URL:
+        drivername: str = f"{db.dialect}+{db.driver}"
+        return URL.create(
+            drivername=drivername,
+            username=db.username,
+            password=db.password,
+            host=db.address,
+            port=db.port,
+            database=db.db,
+        )
+
 
     def connect(
         self,
-        username: str,
-        password: str,
-        database: str,
-        host: str,
-        port: int = 5432,
-        dialect: str = "postgresql",
-        driver: str = "psycopg2",
+        db: interfaces.Database
     ) -> orm.Session:
         """Connect to a database
 
@@ -58,29 +63,14 @@ class Database:
         to identify the database host.
 
         Args:
-            username
-            password
-            name
-            host
-            dialect:    Dabatase backend
-                        Example: postgresql
-            driver: Database driver name e.g. `psycopg2`
+            db: DatabaseConfig
 
         Return:
             connection: A connection channel to the database
         """
 
         # To make it simpler, create a URL to connect
-        drivername: str = f"{dialect}+{driver}"
-        url: URL = URL.create(
-            drivername=drivername,
-            username=username,
-            password=password,
-            host=host,
-            port=port,
-            database=database,
-        )
-
+        url: URL = self.get_url(db)
         log.debug("Connecting to database...")
 
         # Create a database engine that we can connect to
@@ -103,8 +93,8 @@ class Database:
         if self.engine:
             log.debug("Loading models...")
 
-            BASE.metadata.create_all(
-                self.engine, BASE.metadata.tables.values(), checkfirst=True
+            Base.metadata.create_all(
+                self.engine, Base.metadata.tables.values(), checkfirst=True
             )
 
     def get_or_create(
@@ -199,35 +189,18 @@ class Database:
             self.session.delete(instance)
 
 
-def start_database(conf: dict[Any, Any]) -> Database:
-    global database
+def create_database(conf: interfaces.Database) -> Database:
+    global _db
 
     log.info("Loading database connection...")
-    database = Database()
-    database.connect(**conf)
-    database.load_models()
 
-    return database
+    db = Database()
+    db.connect(conf)
+    db.load_models()
 
+    _db = db
+    return db
 
-def build_url() -> str:
-    source = DATABASE_CONF
-    url: str = "%s://%s:%s@%s:%s/%s" % (
-        source.get("dialect"),
-        source.get("username"),
-        source.get("password"),
-        source.get("host"),
-        source.get("port"),
-        source.get("database"),
-    )
-
-    return url
-
-
-def get_database() -> Database:
-    global database
-
-    if not database:
-        database = start_database(DATABASE_CONF)
-
-    return database
+def get_database() -> Database | None: 
+    global _db
+    return _db

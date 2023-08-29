@@ -11,7 +11,6 @@ class Host:
     address: str = "localhost"
     # Listening port
     port: int = 80
-    
 
 @dataclass
 class Client(Host):
@@ -23,7 +22,5 @@ class Config:
     host: Host = MISSING
     # Log
     verbose: int = logging.DEBUG
-    # Paths
-    resources: str = "resources"
     # Communication
     clients: dict[str, Client] = field(default_factory=dict)

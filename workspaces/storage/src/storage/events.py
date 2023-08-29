@@ -19,7 +19,7 @@ from typing import Any, Dict
 
 from sqlalchemy import or_
 from sqlalchemy.orm.collections import InstrumentedList
-from storage.database.api import (
+from storage.api.factory import (
     ApiFactory,
     ItemEndpoint,
     PageEndpoint,

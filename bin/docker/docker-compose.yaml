@@ -11,105 +11,67 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+x-project:
+  &project
+  stdin_open: true
+  tty: true
 
 services:
 
-  # Scraper service
   scraper:
     container_name: scraper
-    command: python -m ms_scraper
+    command: scraper
+    <<: *project
     build:
-      context: ..
-      dockerfile: deployments/Dockerfile
+      context: ${PWD:-../..}
+      dockerfile: bin/docker/Dockerfile
       args:
-        - PORT=2201
-        - SERVICE=scraper
-    stdin_open: true
-    tty: true
-    environment:
-      - VOLUME=local
-    ports:
-      - "2201:2201"
+        - PROJECT=scraper
     networks:
-      - midnight_sea
-    volumes:
-      - ../tools/scraper:/usr/src/local
+    - ms
 
-  # Storage service
   storage:
     container_name: storage
-    command: python -m ms_storage;
+    command: storage 'db={address:postgres,username:username,password:password}'
+    <<: *project
     build:
-      context: ..
-      dockerfile: deployments/Dockerfile
+      context: ${PWD:-../..}
+      dockerfile: bin/docker/Dockerfile
       args:
-        - PORT=2202
-        - SERVICE=storage
-    stdin_open: true
-    tty: true
-    environment:
-      - DB_HOST=postgres
-      - DB_NAME=${DB_NAME:-db}
-      - DB_USER=${DB_USER:-user}
-      - DB_PASSWORD=${DB_PASSWORD:-password}
-      - VOLUME=local
-      - SCRAPER_HOST=scraper
-      - SCRAPER_PORT=2201
+        - PROJECT=storage
     ports:
-      - "2202:2202"
+      - "20000:20000"
     networks:
-      - postgres
-      - midnight_sea
-    depends_on:
-      - postgres
-    volumes:
-      - ../tools/storage:/usr/src/local
+    - ms
+    - postgres
+    
 
-  # Crawler service
   crawler:
     container_name: crawler
-    command: python -m ms_crawler
+    command: crawler
+    <<: *project
     build:
-      context: ..
-      dockerfile: deployments/Dockerfile
+      context: ${PWD:-../..}
+      dockerfile: bin/docker/Dockerfile
       args:
-        - SERVICE=crawler
-    environment:
-      # Storage
-      - STORAGE_HOST=storage
-      - STORAGE_PORT=2202
-      - VOLUME=local
-      - PROXY_HOST=${PROXY_HOST:-proxy}
-      - VERBOSE=${VERBOSE:-INFO}
-      - BUDGET=${BUDGET:-simple}
-      - TIMEOUT=${TIMEOUT:-60}
-      - MAX_DELAY=${MAX_DELAY:-5}
-      - MAX_CONNECTIONS=${MAX_CONNECTIONS:-10}
-    stdin_open: true
-    tty: true
-    depends_on:
-      - ${PROXY_HOST:-proxy}
+        - PROJECT=crawler
     networks:
+      - ms
       - proxy
-      - midnight_sea
-    volumes:
-      - ../tools/crawler:/usr/src/local
-
-  ################################################
-  #                   Extra
-  ################################################
+    
 
   postgres:
     image: postgres:latest
     container_name: postgres
     environment:
-      - POSTGRES_DB=${DB_NAME:-db}
-      - POSTGRES_USER=${DB_USER:-user}
+      - POSTGRES_DB=${DB_NAME:-midnight_sea}
+      - POSTGRES_USER=${DB_USER:-username}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
     volumes:
-      - oasis_data:/var/lib/postgresql/data
+      - ms:/var/lib/postgresql/data
     networks:
       - postgres
+      - ms
 
   pgadmin:
     container_name: pgadmin4
@@ -137,7 +99,7 @@ services:
       - "7170:7070"
       - "4544:4444"
       - "9950:9050"
-      - "8080:8080"
+      - "0.0.0.0:8080:8080"
     restart: on-failure
     environment:
       - PORT_TOR=9950
@@ -159,8 +121,8 @@ services:
       - postgres
     environment:
       - POSTGRES_HOST=postgres
-      - POSTGRES_DB=${DB_NAME:-db}
-      - POSTGRES_USER=${DB_USER:-user}
+      - POSTGRES_DB=${DB_NAME:-midnight_sea}
+      - POSTGRES_USER=${DB_USER:-username}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
       - POSTGRES_EXTRA_OPTS=-Z9 --schema=public --blobs
       - SCHEDULE=@every 0h30m00s
@@ -170,10 +132,10 @@ services:
       - HEALTHCHECK_PORT=81
 
 volumes:
-  oasis_data: null
+  ms: null
   pgadmin: null
 
 networks:
-  midnight_sea:
+  ms:
   proxy:
   postgres:

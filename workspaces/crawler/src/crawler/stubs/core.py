@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from dataclasses import dataclass
 import json
 import os
 
@@ -25,9 +26,11 @@ from lib.stubs.factory import StubFactory
 from crawler.stubs.interfaces import Core
 from lib.protos.crawler_pb2_grpc import CrawlerStub
 from lib.protos.crawler_pb2 import CookiesRequest, MarketRequest
+from lib.stubs.interfaces import LocalStubCls
 
 
 @StubFactory.register("core")
+@dataclass
 class CoreService(Core):
     _stub_cls = CrawlerStub
     _timeout: int = 600  # 10 min
@@ -61,18 +64,20 @@ class CoreService(Core):
 
 
 @StubFactory.register("core", True)
+@dataclass
 class LocalCoreService(Core):
     """Local Core Service.
 
     Interacts with the host shell to prompt for the market and cookies
     """
-
+    _stub_cls = LocalStubCls
+    
     TIMEOUT = 30  # Seconds
     FILENAME: str = "cookies.json"
 
     def _cookies_content(self, market):
         """Returns the content of the cookies file"""
-        folder = os.path.join("dist", "markets", market)
+        folder = os.path.join("local", "markets", market)
 
         # Create the folders if they do not exist
         if not os.path.exists(folder):
@@ -92,16 +97,17 @@ class LocalCoreService(Core):
 
     def cookies(self, market: str) -> dict[Any, Any]:
         """Builds cookies from a given file"""
-        ticket = self.Ticket(value=None)
+        ticket = self.Ticket()
         self.add_ticket(ticket)
 
         self.lock.acquire()
         if ticket.value is not None:
             return ticket.value
 
-        log.warning(
-            "Market %s needs authentication" % (market),
-            "When you are ready, introduce any value. If you rather skip this link, introduce `skip`"
+        log.info("""
+            Market %s needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            """ % market
         )
         _ = input()
 

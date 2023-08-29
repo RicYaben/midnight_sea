@@ -1,9 +1,9 @@
 
 from dataclasses import dataclass, field
-from crawler.strategies.page import Page
-from crawler.session.session import SessionManager
 from typing import Any, Protocol
 
+from crawler.strategies.page import Page
+from crawler.session.session import SessionManager
 from crawler.crawlers.crawler import Crawler
 from crawler.stubs.interfaces import Storage
 

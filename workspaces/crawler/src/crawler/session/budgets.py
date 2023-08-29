@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import jsonlines
 import os
 import random
+
 from abc import abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -41,6 +42,7 @@ class Recommendation:
     delay: float = 1
     connections: int = 1
     records: list[Record] = field(default_factory=list)
+    volume: str = "local"
 
     def success_rate(self) -> float:
         # Percentage of successful connections
@@ -58,19 +60,12 @@ class Recommendation:
 
     def register(self, record: Record) -> None:
         """Include a new record and store it"""
-        filepath: str = "dist/records.csv"
+        file_name: str = "records.jsonl"
+        file_path: str = os.path.join(self.volume, file_name)
         data = record.__dict__
         
-        # Create the file and write the header to the file
-        if not os.path.exists(filepath):
-            with open(filepath, "w", newline="") as outcsv:
-                writer = csv.DictWriter(outcsv, fieldnames=data.keys())
-                writer.writeheader()
-            
-        # Append a new row
-        with open(filepath, "a+") as f:
-            writer = csv.DictWriter(f, fieldnames=data.keys())
-            writer.writerow(data)
+        with jsonlines.open(file_path, mode="a+", encoding="utf-8") as f:
+            f.write(data)
 
         self.records.append(record)
 

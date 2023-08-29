@@ -17,28 +17,36 @@
 
 import sys
 import multiprocessing
+from dataclasses import dataclass
 
-
-from storage.database.database import get_database
-
+from storage.database.database import create_database
 
 from lib.server.factory import ServerFactory, start_server
-from lib.conf.config import Config
+from lib.config.config import Config
+from storage.database.interfaces import Database
 
 import hydra
 from hydra.core.config_store import ConfigStore
+from omegaconf import MISSING
+
+
+@dataclass
+class StorageConfig(Config):
+    # Database configuration
+    db: Database = MISSING
+
 
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'.
-cs.store(name="config", node=Config)
+cs.store(name="base_config", node=StorageConfig)
 
-@hydra.main(version_base=None, config_path="resources/config", config_name="storage")
+@hydra.main(version_base=None, config_path="config", config_name="config")
 def main(cfg: Config) -> None:
     # Read the credentials and build the server
     server = ServerFactory.create_server(host=cfg.host, workers=10)
 
     # Create a database connection and load the models
-    _ = get_database()
+    _ = create_database(cfg.db)
 
     # Start the server
     srv_workers = multiprocessing.Process(target=start_server, args=(server,))

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from dataclasses import dataclass, field
 import os
 import json
 
@@ -29,7 +30,9 @@ from lib.protos.storage_pb2 import (
     CheckRequest,
 )
 from lib.protos.storage_pb2_grpc import StorageStub
+from lib.stubs.interfaces import LocalStubCls
 
+@dataclass
 @StubFactory.register("storage")
 class StorageService(Storage):
     _stub_cls = StorageStub
@@ -92,9 +95,11 @@ class StorageService(Storage):
 
         return response.pages
 
+@dataclass
 @StubFactory.register("storage", True)
 class LocalStorageService(Storage):
-    _pending: list[Page] = []
+    _stub_cls = LocalStubCls
+    _pending: list[Page] = field(default_factory=list)
 
     def store(self, pages: list[Page], market: str, model: str) -> bool:
         """Method to store locally the content of the pages
@@ -112,7 +117,7 @@ class LocalStorageService(Storage):
             fpath = [
                 p for p in [category] if p
             ]  # NOTE: The page already contains a "model" field!
-            local = os.path.join("dist", "markets", market, model, *fpath)
+            local = os.path.join("local", "markets", market, model, *fpath)
 
             log.debug("Storing item %s in %s" % (page.pk, local))
 
@@ -150,7 +155,7 @@ class LocalStorageService(Storage):
         # If there are pending files, returm them
         if not self._pending:
             # Check if the folder exists
-            local = os.path.join("dist", "markets", market, model)
+            local = os.path.join("local", "markets", market, model)
 
             if not os.path.exists(local):
                 os.makedirs(local)
@@ -193,7 +198,7 @@ class LocalStorageService(Storage):
         Returns:
             list[str]: List of pages found in the storage
         """
-        local = os.path.join("dist", "markets", market, model)
+        local = os.path.join("local", "markets", market, model)
 
         if not local:
             os.makedirs(local)

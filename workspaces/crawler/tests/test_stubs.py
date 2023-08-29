@@ -2,7 +2,7 @@
 import unittest
 
 from crawler.stubs.storage import LocalStorageService
-from lib.conf.config import Client
+from lib.config.config import Client
 from lib.stubs.factory import StubFactory
 
 

@@ -22,21 +22,18 @@ import yaml
 
 @dataclass
 class State:
-    """This class aims to provide an interface to store the state
-    of the current crawl.
-    """
-
+    """This class stores the state of the current crawl."""
     market: str
 
     window_max: int = 5
     window_min: int = 2
-    markets_folder = os.path.join("dist", "markets")
+    volume = os.path.join("local", "markets")
 
     _state: dict[Any, Any] = field(default_factory=dict)
     _state_file: str = ""
 
     def get_state(self) -> dict:
-        market_folder = os.path.join("dist", "markets", self.market)
+        market_folder = os.path.join(self.volume, self.market)
 
         # Create the folder if it does not exists yet
         if not os.path.exists(market_folder):

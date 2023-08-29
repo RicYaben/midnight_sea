@@ -18,14 +18,20 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from ms_storage.database.database import build_url
-from ms_storage.database.models import Base
+from storage.database.database import get_database, Base
+
+class DatabaseNotLoadedException(Exception):
+    pass
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-# Change the config to get the url of the database from the environment
-config.set_main_option("sqlalchemy.url", build_url())
+
+# Change the config to get the url of the database
+db = get_database()
+if not db:
+    raise DatabaseNotLoadedException
+config.set_main_option("sqlalchemy.url", db.get_url())
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

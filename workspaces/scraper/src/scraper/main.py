@@ -18,19 +18,19 @@
 import sys
 
 from lib.server.factory import ServerFactory, start_server
-from lib.conf.config import Config
+from lib.config.config import Config
 
 import hydra
 from hydra.core.config_store import ConfigStore
 
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'.
-cs.store(name="config", node=Config)
+cs.store(name="base_config", node=Config)
 
-@hydra.main(version_base=None, config_path="resources/config", config_name="scraper")
+@hydra.main(version_base=None, config_path="config", config_name="config")
 def main(cfg: Config) -> None:
     # Read the credentials and build the server
-    server = ServerFactory.create_server(host=cfg.host, workers=10)
+    server = ServerFactory.create_server(host=cfg.host, workers=5)
 
     # Start the server
     start_server(server)

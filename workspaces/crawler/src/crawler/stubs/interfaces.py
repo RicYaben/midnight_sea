@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
 from queue import Queue
 from typing import Any
 from dataclasses import dataclass
 
 from lib.stubs.interfaces import Stub
-from lib.logger.logger import log
 
 from crawler.strategies.page import Page
 
-import threading
+from threading import Lock
 
 @dataclass
 class Core(Stub):
@@ -32,7 +30,7 @@ class Core(Stub):
         value: Any = None
 
     name: str = "core"
-    lock = threading.Lock
+    lock = Lock()
 
     _q: Queue = Queue()
 

@@ -24,7 +24,7 @@ from concurrent import futures
 from typing import Tuple
 
 import grpc
-from lib.conf.config import Host
+from lib.config.config import Host
 from lib.logger.logger import log
 
 class ServerFactory:

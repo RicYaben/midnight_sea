@@ -14,6 +14,8 @@
 
 import yaml
 import os
+import scraper
+
 from dataclasses import dataclass, field
 
 from lib.logger.logger import log
@@ -49,7 +51,9 @@ def get_blueprint(market: str, model: str) -> Blueprint:
     model = model.lower()
     # Check that the file is there and it is a file
     filename: str = "%s.yaml" % model
-    filepath = os.path.join("dist", market, filename)
+
+    base_path = os.path.join(os.path.dirname(scraper.__file__), "../../dist")
+    filepath = os.path.join(base_path, market, filename)
 
     if os.path.isfile(filepath):
 

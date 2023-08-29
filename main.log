@@ -17,3 +17,149 @@
 [2023-08-28 14:05:26,507][root][INFO] - Attempting authentication...
 [2023-08-28 14:05:26,508][root][WARNING] - Market asap needs authentication
 [2023-08-28 14:05:26,509][root][WARNING] - When you are ready, introduce any value. If you rather skip this link, introduce `skip`
+[2023-08-29 09:56:57,515][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 09:57:34,090][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 09:58:31,673][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:00:34,067][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:00:36,210][root][INFO] - 
+            Market asap needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            
+[2023-08-29 10:00:50,649][root][INFO] - Requesting pending vendor(s)...
+[2023-08-29 10:06:53,746][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:06:56,501][root][INFO] - 
+            Market asap needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            
+[2023-08-29 10:07:38,390][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:10:17,975][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:10:20,072][root][INFO] - 
+            Market asap needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            
+[2023-08-29 10:10:22,390][root][INFO] - Requesting pending vendor(s)...
+[2023-08-29 10:19:43,881][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:19:46,130][root][INFO] - 
+            Market asap needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            
+[2023-08-29 10:19:46,713][root][INFO] - Requesting pending vendor(s)...
+[2023-08-29 10:21:31,757][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 10:59:32,705][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 11:02:13,456][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 11:36:56,937][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 11:37:09,737][root][INFO] - 
+            Market asap needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            
+[2023-08-29 11:37:13,722][root][INFO] - Requesting pending vendor(s)...
+[2023-08-29 12:23:36,160][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 12:24:34,192][root][WARNING] - Chain or Key not found
+[2023-08-29 12:26:09,811][root][WARNING] - Chain or Key not found
+[2023-08-29 12:28:04,698][root][WARNING] - Chain or Key not found
+[2023-08-29 12:58:16,739][root][WARNING] - Chain or Key not found
+[2023-08-29 12:58:16,746][root][WARNING] - Loaded insecure port
+[2023-08-29 12:58:16,746][root][INFO] - Loading database connection...
+[2023-08-29 13:02:18,371][root][WARNING] - Chain or Key not found
+[2023-08-29 13:02:18,377][root][WARNING] - Loaded insecure port
+[2023-08-29 13:02:18,377][root][INFO] - Loading database connection...
+[2023-08-29 13:10:15,038][root][WARNING] - Chain or Key not found
+[2023-08-29 13:10:15,045][root][WARNING] - Loaded insecure port
+[2023-08-29 13:10:15,046][root][INFO] - Loading database connection...
+[2023-08-29 13:11:56,827][root][WARNING] - Chain or Key not found
+[2023-08-29 13:11:56,834][root][WARNING] - Loaded insecure port
+[2023-08-29 13:11:56,834][root][INFO] - Loading database connection...
+[2023-08-29 13:14:57,063][root][WARNING] - Chain or Key not found
+[2023-08-29 13:14:57,070][root][WARNING] - Loaded insecure port
+[2023-08-29 13:14:57,070][root][INFO] - Loading database connection...
+[2023-08-29 13:17:34,091][root][WARNING] - Chain or Key not found
+[2023-08-29 13:17:34,098][root][WARNING] - Loaded insecure port
+[2023-08-29 13:17:34,098][root][INFO] - Loading database connection...
+[2023-08-29 13:23:38,606][root][WARNING] - Chain or Key not found
+[2023-08-29 13:23:38,612][root][WARNING] - Loaded insecure port
+[2023-08-29 13:23:38,613][root][INFO] - Loading database connection...
+[2023-08-29 13:24:33,189][root][WARNING] - Chain or Key not found
+[2023-08-29 13:24:33,195][root][WARNING] - Loaded insecure port
+[2023-08-29 13:24:33,196][root][INFO] - Loading database connection...
+[2023-08-29 13:26:44,613][root][WARNING] - Chain or Key not found
+[2023-08-29 13:26:44,619][root][WARNING] - Loaded insecure port
+[2023-08-29 13:26:44,620][root][INFO] - Loading database connection...
+[2023-08-29 14:06:53,476][root][WARNING] - Chain or Key not found
+[2023-08-29 14:06:53,483][root][WARNING] - Loaded insecure port
+[2023-08-29 14:06:53,483][root][INFO] - Loading database connection...
+[2023-08-29 14:07:58,020][root][WARNING] - Chain or Key not found
+[2023-08-29 14:07:58,027][root][WARNING] - Loaded insecure port
+[2023-08-29 14:07:58,028][root][INFO] - Loading database connection...
+[2023-08-29 14:07:58,102][root][INFO] - Connected to database
+[2023-08-29 14:12:05,551][root][WARNING] - Chain or Key not found
+[2023-08-29 14:12:05,557][root][WARNING] - Loaded insecure port
+[2023-08-29 14:12:05,558][root][INFO] - Loading database connection...
+[2023-08-29 14:12:05,617][root][INFO] - Connected to database
+[2023-08-29 14:14:13,016][root][WARNING] - Chain or Key not found
+[2023-08-29 14:14:13,022][root][WARNING] - Loaded insecure port
+[2023-08-29 14:14:13,023][root][INFO] - Loading database connection...
+[2023-08-29 14:14:13,084][root][INFO] - Connected to database
+[2023-08-29 14:16:26,141][root][WARNING] - Chain or Key not found
+[2023-08-29 14:16:26,148][root][WARNING] - Loaded insecure port
+[2023-08-29 14:16:26,148][root][INFO] - Loading database connection...
+[2023-08-29 14:16:26,223][root][INFO] - Connected to database
+[2023-08-29 14:18:38,921][root][WARNING] - Chain or Key not found
+[2023-08-29 14:18:38,927][root][WARNING] - Loaded insecure port
+[2023-08-29 14:18:38,928][root][INFO] - Loading database connection...
+[2023-08-29 14:18:38,989][root][INFO] - Connected to database
+[2023-08-29 14:18:50,031][root][WARNING] - Chain or Key not found
+[2023-08-29 14:18:50,037][root][WARNING] - Loaded insecure port
+[2023-08-29 14:18:50,038][root][INFO] - Loading database connection...
+[2023-08-29 14:18:50,099][root][INFO] - Connected to database
+[2023-08-29 14:20:42,608][root][WARNING] - Chain or Key not found
+[2023-08-29 14:20:42,614][root][WARNING] - Loaded insecure port
+[2023-08-29 14:20:42,615][root][INFO] - Loading database connection...
+[2023-08-29 14:20:42,670][root][INFO] - Connected to database
+[2023-08-29 14:23:41,272][root][WARNING] - Chain or Key not found
+[2023-08-29 14:23:41,278][root][WARNING] - Loaded insecure port
+[2023-08-29 14:23:41,279][root][INFO] - Loading database connection...
+[2023-08-29 14:23:41,342][root][INFO] - Connected to database
+[2023-08-29 14:23:58,543][root][WARNING] - Chain or Key not found
+[2023-08-29 14:23:58,551][root][WARNING] - Loaded insecure port
+[2023-08-29 14:23:58,552][root][INFO] - Loading database connection...
+[2023-08-29 14:23:58,625][root][INFO] - Connected to database
+[2023-08-29 14:24:29,579][root][WARNING] - Chain or Key not found
+[2023-08-29 14:24:29,587][root][WARNING] - Loaded insecure port
+[2023-08-29 14:24:29,588][root][INFO] - Loading database connection...
+[2023-08-29 14:24:29,670][root][INFO] - Connected to database
+[2023-08-29 14:24:51,604][root][WARNING] - Chain or Key not found
+[2023-08-29 14:24:51,610][root][WARNING] - Loaded insecure port
+[2023-08-29 14:24:51,611][root][INFO] - Loading database connection...
+[2023-08-29 14:24:51,681][root][INFO] - Connected to database
+[2023-08-29 14:25:00,950][root][WARNING] - Chain or Key not found
+[2023-08-29 14:25:00,959][root][WARNING] - Loaded insecure port
+[2023-08-29 14:25:00,960][root][INFO] - Loading database connection...
+[2023-08-29 14:25:01,032][root][INFO] - Connected to database
+[2023-08-29 14:25:27,565][root][WARNING] - Chain or Key not found
+[2023-08-29 14:25:27,571][root][WARNING] - Loaded insecure port
+[2023-08-29 14:25:27,572][root][INFO] - Loading database connection...
+[2023-08-29 14:25:27,632][root][INFO] - Connected to database
+[2023-08-29 14:27:24,547][root][WARNING] - Chain or Key not found
+[2023-08-29 14:27:24,553][root][WARNING] - Loaded insecure port
+[2023-08-29 14:27:24,554][root][INFO] - Loading database connection...
+[2023-08-29 14:27:24,625][root][INFO] - Connected to database
+[2023-08-29 14:28:09,956][root][WARNING] - Chain or Key not found
+[2023-08-29 14:28:09,963][root][WARNING] - Loaded insecure port
+[2023-08-29 14:28:09,964][root][INFO] - Loading database connection...
+[2023-08-29 14:28:10,036][root][INFO] - Connected to database
+[2023-08-29 14:31:26,731][root][WARNING] - Chain or Key not found
+[2023-08-29 14:31:26,737][root][WARNING] - Loaded insecure port
+[2023-08-29 14:31:26,738][root][INFO] - Loading database connection...
+[2023-08-29 14:31:26,791][root][INFO] - Connected to database
+[2023-08-29 14:31:26,841][root][INFO] - Server started
+[2023-08-29 14:32:48,651][root][WARNING] - Chain or Key not found
+[2023-08-29 14:32:48,658][root][WARNING] - Loaded insecure port
+[2023-08-29 14:32:48,658][root][INFO] - Loading database connection...
+[2023-08-29 14:32:48,728][root][INFO] - Connected to database
+[2023-08-29 14:32:48,780][root][INFO] - Server started
+[2023-08-29 14:33:36,444][root][INFO] - Introduce the name of the market to crawl
+[2023-08-29 14:33:40,065][root][INFO] - 
+            Market asap needs authentication
+            When you are ready, introduce any value. If you rather skip this link, introduce `skip`" 
+            
+[2023-08-29 14:33:41,661][root][INFO] - Requesting pending vendor(s)...

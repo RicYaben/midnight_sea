@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from storage.database.api import PageEndpoint
+from storage.api.factory import PageEndpoint
 from storage.volume.volume import volume
 
 # Although the name is confusing, this refers to the server/client connection between

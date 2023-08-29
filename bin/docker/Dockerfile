@@ -11,12 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-ARG PROJECT
-
 FROM python:slim-buster AS base
 
 FROM base AS builder
-LABEL maintainer="rmyl@dtu.dk"
 
 # Environment variables for the container
 ENV PYTHONFAULTHANDLER=1 \
@@ -34,23 +31,21 @@ RUN apt-get update \
     build-essential \
     libpq-dev
 
-RUN mkdir /usr/src/${PROJECT} /usr/src/local \
-    # Create the system account and give permissions
-    && groupadd -r ${PROJECT} \ 
-    # add the user to the folder, and add a name for the system group and the group
-    && useradd -d /usr/src -r -g ${PROJECT} ${PROJECT} \
-    # add the rights to the folder and its sub-folders
-    && chown ${PROJECT}:${PROJECT} -R /usr/src
+FROM builder AS release
+LABEL maintainer="rmyl@dtu.dk"
 
-WORKDIR /usr/src/${PROJECT}
+ARG PROJECT
+ENV PROJECT=$PROJECT
+
+WORKDIR /usr/src/$PROJECT
 
 # Copy the necessary files for the project
-COPY --chown=${PROJECT}:${PROJECT} pyproject.toml ./
-COPY --chown=${PROJECT}:${PROJECT} lib/ lib/
-COPY --chown=${PROJECT}:${PROJECT} workspaces/${PROJECT}/ workspaces/${PROJECT}/
+COPY pyproject.toml pyproject.toml
+COPY lib/ lib/
+COPY config/ config/
+COPY workspaces/$PROJECT/ workspaces/$PROJECT/
 
 # Configure poetry and install the dependencies
-RUN python -m install workspaces/${PROJECT}
+RUN python -m pip install -e workspaces/$PROJECT
 
-USER ${PROJECT}
-CMD ["python", "-m", "${PROJECT}"]
+ENTRYPOINT ["python", "-m"]

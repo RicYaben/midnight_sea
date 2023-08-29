@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 from typing import Callable
+from attr import dataclass
 from crawler.strategies.interfaces import Strategy
 
 

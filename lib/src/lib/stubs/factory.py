@@ -1,10 +1,16 @@
+import os
+
 from typing import Callable
 
-from lib.stubs.interfaces import Stub
-from lib.conf.config import Client
+from lib.stubs.interfaces import Stub, LocalStubCls
+from lib.config.config import Client
+from lib.logger.logger import log
 
-import os
-import grpc
+from grpc import Channel, insecure_channel, secure_channel, ssl_channel_credentials
+
+
+class StubNotFoundException(Exception):
+    pass
 
 class StubFactory:
     stubs: dict[str, Stub] = {}
@@ -33,19 +39,23 @@ class StubFactory:
     def create_stub(cls, client: Client) -> Stub | None:
         stub: Stub = cls.get_stub(client.name, client.local)
         if not stub:
-            return None
+            raise StubNotFoundException
+        
+        channel: Channel = None
+        if not client.local:
+            cert_path = os.path.join("dist/certs", "%s.crt" % client.name)
+            if os.path.isfile(cert_path):
+                with open(cert_path, "rb") as f:
+                    cert = f.read()
+                    creds = ssl_channel_credentials(cert)
 
-        cert_path = os.path.join("dist/certs", "%s.crt" % client.name)
-        if os.path.isfile(cert_path):
-            with open(cert_path, "rb") as f:
-                cert = f.read()
-                creds = grpc.ssl_channel_credentials(cert)
+                    channel: Channel = secure_channel(
+                        "%s:%s" % (client.address, client.port), credentials=creds
+                    )
+                
+            else:
+                channel: Channel = insecure_channel("%s:%s" % (client.address, client.port))
+                log.info("Created insecure channel with %s" % client.name)
 
-                channel = grpc.secure_channel(
-                    "%s:%s" % (client.address, client.port), credentials=creds
-                )
-            
-        else:
-            channel = grpc.insecure_channel("%s:%s" % (client.address, client.port))
-
-        return stub(client= client, channel= channel)
+        instance = stub.create(client=client, channel=channel)
+        return instance
