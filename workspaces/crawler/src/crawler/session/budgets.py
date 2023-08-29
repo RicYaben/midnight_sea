@@ -25,7 +25,6 @@ from uuid import uuid4
 
 @dataclass
 class Record:
-    crawler_id: str
     url: str
     code: int
     budget: str
@@ -70,13 +69,12 @@ class Recommendation:
         self.records.append(record)
 
     def record(
-        self, response, name: str, url: str, response_code: int, elapsed, crawler_id: str
+        self, response, name: str, url: str, response_code: int, elapsed
     ) -> None:
         if not response:
             return
         
         rec = Record(
-            crawler_id=crawler_id,
             code=response_code,
             respond_time=elapsed,
             url=url,

@@ -23,16 +23,17 @@ from lib.config.config import Config
 import hydra
 from hydra.core.config_store import ConfigStore
 
+from scraper.server.scraper import Scraper
+
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'.
 cs.store(name="base_config", node=Config)
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def main(cfg: Config) -> None:
-    # Read the credentials and build the server
-    server = ServerFactory.create_server(host=cfg.host, workers=5)
 
     # Start the server
+    server = ServerFactory.create_server(servicer=Scraper, host=cfg.host, workers=5)
     start_server(server)
 
 

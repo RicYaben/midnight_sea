@@ -42,7 +42,7 @@ class SessionManager:
     cookies: dict[Any, Any] = field(default_factory=dict)
     headers: dict[str, Any] = field(default_factory=lambda: {"user-agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"})
 
-    _timeout: int = 60
+    _timeout: int = 20
     _session: requests.Session = None
 
     @property

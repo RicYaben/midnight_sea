@@ -14,7 +14,7 @@
 
 from lib.protos import scraper_pb2, scraper_pb2_grpc
 from scraper.scraper.scraper import scrape
-from google.protobuf.struct_pb2 import Struct, ScrapeResponse
+from google.protobuf.struct_pb2 import Struct
 
 
 class Scraper(scraper_pb2_grpc.ScraperServicer):

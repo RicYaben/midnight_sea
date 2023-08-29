@@ -1,3 +1,4 @@
 scraper:
   name: scraper
   address: scraper
+  port: 80

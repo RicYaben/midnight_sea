@@ -1,4 +1,4 @@
 storage:
   name: storage
   address: storage
-  port: 20000
+  port: 80

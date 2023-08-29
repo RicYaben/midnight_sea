@@ -15,6 +15,13 @@
 from dataclasses import dataclass
 from typing import Callable, Protocol
 
+Proxy = "localhost"
+
+def set_proxy(addr: str):
+    global Proxy
+
+    Proxy = addr
+
 @dataclass
 class Network(Protocol):
     protocol: str
@@ -23,12 +30,12 @@ class Network(Protocol):
 
     def get_proxy(self) -> dict[str, str]:
         """Generic build a proxy for http and https redirections"""
-        url: str = "%s://%s:%d" % (self.protocol, self.host, self.port)
+        url: str = "%s://%s:%d" % (self.protocol, Proxy, self.port)
         ret: dict = dict(http=url, https=url)
         return ret
 
     def as_str(self) -> str:
-        url: str = "%s://%s:%d" % (self.protocol, self.host, self.port)
+        url: str = "%s://%s:%d" % (self.protocol, Proxy, self.port)
         return url
 
 
@@ -55,7 +62,6 @@ class NetworkFactory:
 class Tor(Network):
     protocol: str = "socks5h"  # Use Socks5 for both http and https
     port: int = 9050  # 9050
-
 
 @NetworkFactory.register("i2p")
 class I2P(Network):

@@ -30,7 +30,7 @@ class CrawlerProtocol(Protocol):
     validators: dict[Any, Validator] = field(default_factory=dict)
 
     # Extra options. Modifiable when initialised
-    path: str = field(default_factory="")
+    path: str = ""
 
     @abstractmethod
     def crawl(self, session: SessionManager, url: str, retry: bool = True):

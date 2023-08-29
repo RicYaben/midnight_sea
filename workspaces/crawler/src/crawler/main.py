@@ -15,20 +15,27 @@
 """
 Main entrypoint for the application
 """
+from dataclasses import dataclass
 from lib.config.config import Config
 from crawler.flags import load_flags
 
 import hydra
 from hydra.core.config_store import ConfigStore
+from crawler.session.networks import set_proxy
 
 hydra.output_subdir = None
 
+@dataclass
+class CrawlerConfig(Config):
+    proxy: str = "localhost"
+
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'.
-cs.store(name="base_config", node=Config)
+cs.store(name="base_config", node=CrawlerConfig)
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def main(cfg: Config):
+    set_proxy(cfg.proxy)
     load_flags(cfg)
 
 if __name__ == "__main__":

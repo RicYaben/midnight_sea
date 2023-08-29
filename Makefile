@@ -5,6 +5,7 @@ init: .clean-venv .venv
 .clean-venv:
 	rm -rf .venv
 
+# IMPORTANT: at the current time, poetry does not support 3.11.  
 .venv:
 	pipx run poetry config virtualenvs.create true --local
 	pipx run poetry install --sync

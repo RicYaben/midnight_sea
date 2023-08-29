@@ -25,6 +25,10 @@ class ValidatorFactory:
         for sec_name, section in sections.items():
             for name, conditions in section.items():
                 validator = cls.validators.get(name)
+
+                if not validator:
+                    continue
+
                 instance = validator(**conditions)
 
                 if sec_name not in ret:

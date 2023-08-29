@@ -48,4 +48,5 @@ COPY workspaces/$PROJECT/ workspaces/$PROJECT/
 # Configure poetry and install the dependencies
 RUN python -m pip install -e workspaces/$PROJECT
 
+EXPOSE 80
 ENTRYPOINT ["python", "-m"]

@@ -17,8 +17,7 @@ from storage.volume.volume import volume
 
 # Although the name is confusing, this refers to the server/client connection between
 # the crawler and the storage services
-from lib.protos import storage_pb2_grpc
-from lib.protos import storage_pb2
+from lib.protos import storage_pb2_grpc, storage_pb2
 
 
 class Storage(storage_pb2_grpc.StorageServicer):

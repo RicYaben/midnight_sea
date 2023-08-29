@@ -17,8 +17,10 @@ from lib.stubs.interfaces import Stub
 from lib.stubs.factory import StubFactory
 from lib.logger.logger import log
 
-# This is here to register the different implementations of the stubs.
+# This is here to register different implementations in their factories
 from crawler.stubs import core, planner, storage
+from crawler.crawlers import validators
+from crawler.strategies import strategy
 
 
 class StrategyNotFound(Exception):
@@ -40,9 +42,12 @@ def get_strategy(
     options: dict = plan.section(model, "options", False)
     model_options = options.get(model) or {}
 
+    # Meta contains name of the market and the domain URL
+    meta: dict = plan.data.get("meta") or {}
+
     # Make the crawler
     crawler: Crawler = Crawler(
-        validators=validators, **plan.data.get("meta"), **model_options
+        validators=validators, **meta, **model_options
     )
 
     kwargs: dict[Any, Any] = dict(

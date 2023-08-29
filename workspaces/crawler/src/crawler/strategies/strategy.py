@@ -174,7 +174,7 @@ class CategoryStrategy(Strategy):
         # without caring about whether there is a new listing in it.
         window = self.state.calculate_window(status)
 
-        log.info(
+        print(
             "Resumming category crawl...\n",
             tabulate(
                 [

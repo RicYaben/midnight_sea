@@ -21,11 +21,12 @@ the other services, including challenges, elastic updates and more.
 import os
 
 from concurrent import futures
-from typing import Tuple
+from typing import Any, Tuple
 
 import grpc
 from lib.config.config import Host
 from lib.logger.logger import log
+from lib.server.handlers import add_handlers
 
 class ServerFactory:
 
@@ -64,12 +65,13 @@ class ServerFactory:
         return private_key, certificate_chain
 
     @classmethod
-    def create_server(cls, host: Host, workers: int=10) -> grpc.Server:
+    def create_server(cls, servicer: Any, host: Host,  workers: int=10) -> grpc.Server:
         key, chain = cls._read_cert()
 
         # Create a server that can be used asynchronously
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=workers))
-
+        add_handlers(server=server, servicer=servicer, name=host.name)
+        
         # If there is a private key and certificate, build a secure port,
         # Otherwise it creates an insecure port.
         if key and chain:

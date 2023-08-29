@@ -28,6 +28,7 @@ from storage.database.interfaces import Database
 import hydra
 from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
+from storage.server.storage import Storage
 
 
 @dataclass
@@ -43,18 +44,11 @@ cs.store(name="base_config", node=StorageConfig)
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def main(cfg: Config) -> None:
     # Read the credentials and build the server
-    server = ServerFactory.create_server(host=cfg.host, workers=10)
-
+    server = ServerFactory.create_server(servicer=Storage, host=cfg.host, workers=10)
     # Create a database connection and load the models
     _ = create_database(cfg.db)
 
-    # Start the server
-    srv_workers = multiprocessing.Process(target=start_server, args=(server,))
-    srv_workers.start()
-
-    # Block the main process until the server dies and the scraping dies
-    srv_workers.join()
-
+    start_server(server)
 
 if __name__ == "__main__":
     sys.exit(main())
