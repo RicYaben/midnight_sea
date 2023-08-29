@@ -9,8 +9,9 @@ defaults:
 
 resources: dist
 
-# Hydra specific config
-hydra:  
+hydra:
+  searchpath:
+    - file://config
   output_subdir: null  
   run:  
     dir: .

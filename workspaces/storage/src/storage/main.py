@@ -32,7 +32,7 @@ cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'.
 cs.store(name="config", node=Config)
 
-@hydra.main(version_base=None, config_name="config")
+@hydra.main(version_base=None, config_path="resources/config", config_name="storage")
 def main(cfg: Config) -> None:
     # Read the credentials and build the server
     server = ServerFactory.create_server(host=cfg.host, workers=10)

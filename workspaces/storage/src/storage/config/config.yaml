@@ -1,0 +1,15 @@
+defaults:
+  - base_config
+  - host: storage
+  - clients:
+    - scraper
+  - _self_ 
+
+resources: dist
+
+hydra:
+  searchpath:
+    - file://config
+  output_subdir: null  
+  run:  
+    dir: .

@@ -1,0 +1,3 @@
+[2023-08-28 23:14:00,384][root][INFO] - Introduce the name of the market to crawl
+[2023-08-28 23:14:47,899][crawler][[1;37mINFO[0m] - {'host': {'name': 'crawler', 'address': 'localhost', 'port': 80}, 'verbose': 10, 'resources': 'dist', 'clients': {'storage': {'name': 'storage', 'address': 'storage', 'port': 80, 'local': False}, 'core': {'name': 'core', 'address': 'localhost', 'port': 80, 'local': True}, 'planner': {'name': 'planner', 'address': 'localhost', 'port': 80, 'local': True}}}
+[2023-08-28 23:14:47,913][root][INFO] - Introduce the name of the market to crawl

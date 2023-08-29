@@ -21,7 +21,7 @@ import uuid
 import zipfile
 
 from dataclasses import dataclass
-from lib.logger import logger
+from lib.logger.logger import log
 
 
 @dataclass
@@ -224,11 +224,11 @@ class Volume:
 
         # Get all the zip files
         zip_files = glob.glob(filepath)
-        logger.info(f"Extracting from {len(zip_files)} Zip files...")
+        log.info(f"Extracting from {len(zip_files)} Zip files...")
 
         # Iterate the files
         for e, zip_file in enumerate(zip_files):
-            logger.info(f"{e}/{len(zip_files)}")
+            log.info(f"{e}/{len(zip_files)}")
             # Load the file and extract
             with zipfile.ZipFile(zip_file, "r") as f:
                 f.extractall(self.pending)
@@ -237,7 +237,7 @@ class Volume:
             if not keep_zip:
                 os.remove(zip_file)
 
-        logger.info("Finished extracting.")
+        log.info("Finished extracting.")
 
     def delete(self, filename: str):
         fpath = os.path.join(self.pending, filename)

@@ -18,7 +18,7 @@ from sqlalchemy import Sequence, inspect
 from sqlalchemy.types import Float, Integer
 from dataclasses import dataclass, field
 
-from lib.logger import logger
+from lib.logger.logger import log
 from storage.database.models import Item, Page, Vendor
 from storage.database.database import Database, get_database
 from sqlalchemy_utils.types.choice import ChoiceType
@@ -232,7 +232,7 @@ class PageEndpoint(ApiEndpoint):
         Returns:
             q: A query list object
         """
-        logger.debug("Checking pages...")
+        log.debug("Checking pages...")
         # Filter the database to get the pages found from the list for the market
         q = (
             self.db.session.query(self.model)
@@ -242,7 +242,7 @@ class PageEndpoint(ApiEndpoint):
 
         # Create the page placeholders for those pages that were not found
         if placeholders:
-            logger.debug("Creating placeholders...")
+            log.debug("Creating placeholders...")
 
             found = [page.url for page in q]
             not_found = [url for url in pages if url not in found]
@@ -252,7 +252,7 @@ class PageEndpoint(ApiEndpoint):
 
     def pending(self, market: str = None, page_type: str = None) -> Sequence:
         """Return the list of pending pages to be crawl"""
-        logger.debug("Checking pending...")
+        log.debug("Checking pending...")
 
         # Get the pages with no file in it
         q = self.db.session.query(self.model).filter(self.model.file == None)

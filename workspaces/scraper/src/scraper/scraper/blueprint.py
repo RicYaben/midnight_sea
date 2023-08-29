@@ -16,7 +16,7 @@ import yaml
 import os
 from dataclasses import dataclass, field
 
-from lib.logger import logger
+from lib.logger.logger import log
 
 
 @dataclass
@@ -62,4 +62,4 @@ def get_blueprint(market: str, model: str) -> Blueprint:
             return blueprint
 
     else:
-        logger.error("Blueprint for market %s, model %s not found" % (market, model))
+        log.error("Blueprint for market %s, model %s not found" % (market, model))

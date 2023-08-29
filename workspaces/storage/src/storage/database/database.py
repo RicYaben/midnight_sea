@@ -23,7 +23,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import orm, exc
 from sqlalchemy.engine import Engine, URL
 
-from lib.logger import logger
+from lib.logger.logger import log
 
 database = None
 
@@ -81,7 +81,7 @@ class Database:
             database=database,
         )
 
-        logger.debug("Connecting to database...")
+        log.debug("Connecting to database...")
 
         # Create a database engine that we can connect to
         engine: Engine = create_engine(url, echo=False, echo_pool=False)
@@ -95,13 +95,13 @@ class Database:
         self.session = session()
         self.engine = engine
 
-        logger.info("Connected to database")
+        log.info("Connected to database")
 
         return session
 
     def load_models(self):
         if self.engine:
-            logger.debug("Loading models...")
+            log.debug("Loading models...")
 
             BASE.metadata.create_all(
                 self.engine, BASE.metadata.tables.values(), checkfirst=True
@@ -137,8 +137,8 @@ class Database:
             else:
                 return self.session.query(model).filter_by(**kwargs).one()
         except orm.exc.NoResultFound as e:
-            logger.error(e)
-            logger.warning(f"Item not found: \nmodel: {model}\nArgs: {kwargs}")
+            log.error(e)
+            log.warning(f"Item not found: \nmodel: {model}\nArgs: {kwargs}")
 
     def create(
         self, model, defaults: dict[Any, Any] = {}, **kwargs
@@ -202,7 +202,7 @@ class Database:
 def start_database(conf: dict[Any, Any]) -> Database:
     global database
 
-    logger.info("Loading database connection...")
+    log.info("Loading database connection...")
     database = Database()
     database.connect(**conf)
     database.load_models()

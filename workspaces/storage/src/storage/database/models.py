@@ -38,7 +38,7 @@ from sqlalchemy_utils.types.choice import ChoiceType
 
 from storage.database.database import get_database
 
-Base = BASE
+Base = None
 
 
 class CRUD:

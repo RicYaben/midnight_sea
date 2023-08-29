@@ -27,7 +27,7 @@ from storage.database.api import (
 )
 from storage.volume.volume import volume
 
-from lib.logger import logger
+from lib.logger.logger import log
 
 def get_pending_pages(market: str = None, limit: int = 100):
     """Returns a list of pending to scrape pages"""
@@ -131,7 +131,7 @@ def store_serialised_entry(model: str, data: Dict[Any, Any], force: bool = True)
 def scrape(scraper, market: str = None):
     """Wrapper for the events related to scraping content from pending files"""
     # Get the pending pages
-    logger.info("Scraping pending content")
+    log.info("Scraping pending content")
     pending = get_pending_pages(market=market)
 
     while pending:
@@ -206,7 +206,7 @@ def rescrape_targetted(scraper, market: str):
     """Wrapper for the events related to re-scrape the content of the pages"""
     eps = {"item": ItemEndpoint(), "vendor": VendorEndpoint()}
     pending = get_pending_files()
-    logger.info(f"Rescraping... pending: {len(pending)}")
+    log.info(f"Rescraping... pending: {len(pending)}")
 
     csize = 100
     for i in range(0, len(pending), csize):

@@ -19,12 +19,13 @@ The package includes methods to start a server and communicate with
 the other services, including challenges, elastic updates and more.
 """
 import os
+
 from concurrent import futures
 from typing import Tuple
 
 import grpc
 from lib.conf.config import Host
-from lib.logger import logger
+from lib.logger.logger import log
 
 class ServerFactory:
 
@@ -41,6 +42,7 @@ class ServerFactory:
         Returns:
             Tuple: private key and chain
         """
+        # TODO: Come back to this "dist" thing. It should be another folder
         # Create common paths
         key_p, chain_p = [
             os.path.join("dist", "server", "server.%s" % p) for p in ["key", "crt"]
@@ -48,7 +50,7 @@ class ServerFactory:
 
         # Validate the paths
         if not (os.path.isfile(key_p) and os.path.isfile(chain_p)):
-            logger.warning(FileNotFoundError("Chain or Key not found"))
+            log.warning(FileNotFoundError("Chain or Key not found"))
             return None, None
 
         # Read the private key
@@ -90,9 +92,9 @@ class ServerFactory:
 
         else:
             server_port = server.add_insecure_port(f"{host.address}:{host.port}")
-            logger.warning("Loaded insecure port")
+            log.warning("Loaded insecure port")
 
-        logger.debug(f"Server built to listen for connections on {host.address} {server_port}")
+        log.debug(f"Server built to listen for connections on {host.address} {server_port}")
 
         return server
 
@@ -104,7 +106,7 @@ def start_server(server: grpc.Server):
         server:    The server passed to the function
     """
     server.start()
-    logger.info("Server started")
+    log.info("Server started")
     server.wait_for_termination()
 
     return server

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from lib.stubs.factory import StubFactory
-from scraper.client.interfaces import Scraper
+from storage.stubs.interfaces import Scraper
 from lib.protos.scraper_pb2 import ScrapeRequest
 from lib.protos.scraper_pb2_grpc import ScraperStub
 

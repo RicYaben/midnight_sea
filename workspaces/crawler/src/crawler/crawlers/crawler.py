@@ -176,7 +176,6 @@ class Crawler(CrawlerProtocol):
         if valid:
             return response
 
-        log.info(f"URL: {url}\nCLEAN: {clean}")
         with open(os.path.join("dist", "response.html"), "wb") as f:
             f.write(response.content)
             
