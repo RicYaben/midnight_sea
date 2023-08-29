@@ -1,10 +1,7 @@
-| :warning: ATTENTION: Version 1.0 is underway and planned for mid August 2023 (includes major changes). |
-| ------------------------------------------------------------------------------------------------------ |
-
 # Midnight Sea
 
-Midnight Sea (MS) is a crawler for "Dark Web" marketplaces.
-The tool can crawl any current marketplace, featuring a human-like behavior to bypass anti-crawling mechanisms and an efficient crawling strategy.
+Midnight Sea (MS) is a generic crawler for Dark Web marketplaces.
+MS features a human-like behavior to bypass anti-crawling mechanisms and a new crawling strategy.
 
 ## Usage
 
@@ -15,11 +12,12 @@ For this, simply type the following command in your terminal:
 # Using Make to start the container
 make up
 # OR
-Docker-compose -p midnight_sea -f deployments/docker-compose.yaml up -d --build
+Docker-compose -p ms -f deployments/docker-compose.yaml up -d --build
 ```
 
-Once everything is started, open a terminal to the crawler service and type the name of the marketplace.
+Once everything is started, open a terminal to the crawler service (e.g., `docker attach crawler`) and type the name of the marketplace.
 When the crawler starts, it will ask for a cookie token from an open session with the market. If you don't have one, do a manual login into the market and copy/paste the session cookie.
+You can find the cookie by sending a new authenticated request to the market home page, and checking either your browser cookie jar, or the cookies sent during the request (from the `Network` tab).
 
 Currently, MS does not solve CAPTCHA nor automatically login into marketplaces. Therefore, it will require your help once in a while to overcome login pages and CAPTCHA. The crawler will eventually ask that you provide a session cookie (every ~45 min).
 
@@ -40,6 +38,46 @@ The container includes the following services:
 | pgBackups | A service that backup the postgres database once every 30 min |
 
 </div>
+
+## Develop
+
+Requirements:
+
+	- Linux environment (e.g., Dev container, WSL, etc)
+	- Pipx
+	- Python from 3.7 to 3.10 (the project relies on Poetry to install dependencies and 3.11 is not supported just yet).
+
+
+Run `make init` to install all the packages included in the project for each service and their dependencies.
+You can test each individual project/workspace using `make .venv-<project>` where `<project>` can be either crawler, storage or scraper.
+
+Alternatively, you can install the application altogether and run it as a normal Python app with `python -m pip install -e workspaces/<project>` and running it through `python -m <project>`.
+
+These projects use [Hydra](https://hydra.cc/docs/intro/) as a configuration loader. The configuration files are stored in the root folder `config` and in each project under the same name (e.g. `workspaces/crawler/src/crawlerconfig`). The usage is better described in Hydra's main page.
+
+In addition, the crawler and scraper services use custom configuration files to recognise the structure of the markets and the content to scrape.
+These files are located in the `dist` folder of each project (e.g., `workspaces/crawler/dist`).
+I came up with a poor naming convention to distinguish these files:
+
+	- Plans: Provide the structure of the markets, validation rules and market metadata (url, name, etc.)
+	- Market State: Contain the state of the crawler for a given market. Helpful to resume crawling sessions.
+	- Blueprints: Sort of helpers for the scraper to guide through the raw files and capture relevant data points.
+
+## Future Plans
+
+I am currently rewriting the crawler in Go.
+There are multiple features that get very challenging to implement in a language like Python.
+Here is a list of some of the features I am planning to add to the crawler (in no particular order):
+
+- Automated login, account managers and account generators
+- CAPTCHA solvers
+- Automated/assisted layout recognition (together with the GUI)
+- Multi-sessions and crawl-sharding (multiple sessions crawling the same market)
+- A GUI (easier to click than to type)
+- Crawlers for Forums and chat applications.
+- And much more!
+
+Keep an eye on the project :)
 
 ---
 

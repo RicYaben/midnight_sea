@@ -1,0 +1,108 @@
+# Copyright 2023 Ricardo Yaben
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+meta:
+  market: tor2door
+  domain: http://u7wwqkugo3qdk4ga4xqce3kwhfuqqzqj3s6q7znb267ia7skfpobaoid.onion/
+
+models:
+  all:
+    validators:
+      status:
+        invalid: 400
+      content:
+        invalid:
+          # Login Page
+          # NOTE: initial does not get the captcha page. Revise!
+          - name: captcha
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    id: captcha
+                  limit: 1
+
+          - name: clock
+            instructions:
+              - props:
+                  name: select
+                  attrs:
+                    name: "clock[hour]"
+                  limit: 1
+
+          - name: clock
+            instructions:
+              - props:
+                  name: img
+                  attrs:
+                    src: captcha/clock/image
+
+          - name: login
+            instructions:
+              - props:
+                  name: input
+                  attrs:
+                    id: username
+                  limit: 1
+  vendor:
+    options:
+      path: "?tab=pgp"
+
+  category:
+    validators:
+      content:
+        required:
+          - &listing
+            name: listing
+            many: true
+            instructions:
+              - props:
+                  name: div
+                  attrs:
+                    class: card product-card
+              - props:
+                  name: a
+                  attrs:
+                    href: /products/
+                attrs:
+                  - href
+    elements:
+      - <<: *listing
+      - name: next_page
+        instructions:
+          - props:
+              name: a
+              attrs:
+                rel: next
+            attrs:
+              - href
+
+    pages:
+      - name: Fraud
+        path: products?category=1
+
+      - name: Digital Products
+        path: products?category=3
+
+      - name: Counterfeit
+        path: products?category=4
+
+      - name: Services
+        path: products?category=6
+
+      - name: Software and hosting
+        path: products?category=7
+
+      - name: Others
+        path: products?category=8

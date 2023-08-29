@@ -1,0 +1,42 @@
+# Copyright 2023 Ricardo Yaben
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+Main entrypoint for the application
+"""
+from dataclasses import dataclass
+from lib.config.config import Config
+from crawler.flags import load_flags
+
+import hydra
+from hydra.core.config_store import ConfigStore
+from crawler.session.networks import set_proxy
+
+hydra.output_subdir = None
+
+@dataclass
+class CrawlerConfig(Config):
+    proxy: str = "localhost"
+
+cs = ConfigStore.instance()
+# Registering the Config class with the name 'config'.
+cs.store(name="base_config", node=CrawlerConfig)
+
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def main(cfg: Config):
+    set_proxy(cfg.proxy)
+    load_flags(cfg)
+
+if __name__ == "__main__":
+    main()

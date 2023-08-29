@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "midnight-sea"
+version = "0.1.0"
+description = "Generic crawler for Dark Web markets"
+authors = ["Ricardo Yaben <rmyl@dtu.dk>"]
+readme = "README.md"
+license = "Apache 2.0"
+include = ["VERSION", "README.md"]
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.lib.dependencies]
+lib = { path = "lib", develop = true}
+
+# Source
+[tool.poetry.group.crawler.dependencies]
+crawler = { path = "workspaces/crawler", develop = true}
+
+[tool.poetry.group.scraper.dependencies]
+scraper = { path = "workspaces/scraper", develop = true}
+
+[tool.poetry.group.storage.dependencies]
+storage = { path = "workspaces/storage", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+black = {version = "^21.11b1", allow-prereleases = true}
+pytest = "^6.2.5"
+flake8 = "^4.0.1"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
