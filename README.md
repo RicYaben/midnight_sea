@@ -12,7 +12,7 @@ For this, simply type the following command in your terminal:
 # Using Make to start the container
 make up
 # OR
-Docker-compose -p ms -f deployments/docker-compose.yaml up -d --build
+docker compose -p ms -f bin/docker/docker-compose.yaml up -d --build
 ```
 
 Once everything is started, open a terminal to the crawler service (e.g., `docker attach crawler`) and type the name of the marketplace.
